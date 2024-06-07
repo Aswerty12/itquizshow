@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ITQuizshow": {
+    "itquizshow": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ITQuizshow:build:production"
+              "buildTarget": "itquizshow:build:production"
             },
             "development": {
-              "buildTarget": "ITQuizshow:build:development"
+              "buildTarget": "itquizshow:build:development"
             }
           },
           "defaultConfiguration": "development"
