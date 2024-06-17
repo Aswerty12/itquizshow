@@ -1,11 +1,12 @@
-import { Routes } from '@angular/router';
+import { RouterModule,Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
 import { HomeComponent } from './home/home.component';
 import { PlayerComponent } from './player/player.component';
 import { HostComponent } from './host/host.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 
-export const routes: Routes = [
+const routeConfig: Routes = [
     {   path: '',
         component: HomeComponent,
         title: 'Home page'},
@@ -24,3 +25,4 @@ export const routes: Routes = [
         title : "404 Error"
     }
 ];
+    export default routeConfig;

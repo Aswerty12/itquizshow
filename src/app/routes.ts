@@ -2,6 +2,7 @@ import {Routes} from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { PlayerComponent } from './player/player.component';
 import { HostComponent } from './host/host.component';
+import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 
 const routeConfig: Routes = [
     {
@@ -10,14 +11,18 @@ const routeConfig: Routes = [
       title: 'Home page',
     },
     {
-      path: 'player/:id',
+      path: 'play',
       component: PlayerComponent,
       title: 'Player View',
     },
     {
-      path: 'host/:id',
+      path: 'host',
       component: HostComponent,
-      title: 'Host View'
-    }
+      title: 'Host View',},
+    {
+        path: '**',
+        component: PagenotfoundComponent,
+        title : "404 Error"
+    },
   ];
   export default routeConfig;
