@@ -1,54 +1,54 @@
+/* parent.component.scss (or a global stylesheet) */
+
 body {
-    font-family: sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fff; /* White background */
-  }
-  
-  main {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-  }
-  
-  /* Navigation styles */
-  nav {
-    display: flex;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: #e0e7ff; /* Light blue background */
-  }
-  
-  nav a {
-    padding: 0.5rem 1rem;
-    color: #333; /* Dark gray text */
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  nav a.active,
-  nav a:hover {
-    color: #007bff; /* Blue on hover and active */
-  }
-  
-  .brand-name {
-    display: flex;
-    align-items: center;
-    color: #007bff; /* Blue brand name */
-  }
-  
-  .brand-logo {
-    width: 3rem;
-    height: 3rem;
-    margin-right: 1rem;
-  }
-  
-  /* Content styles */
-  section.content {
-    flex: 1; /* Takes up remaining space */
-    padding: 2rem;
-    background-color: #f5f5f5; /* Light gray background for content */
-  }
-  
-  
-  
+  /* Maintain the same light blue background and padding */
+  font-family: sans-serif;
+  margin: 0;
+  background-color: #e0f2ff;
+  padding: 2rem;
+}
+
+main {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+/* Navigation styles */
+nav {
+  display: flex;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #e0e7ff; /* Maintain light blue background */
+}
+
+nav a {
+  padding: 0.5rem 1rem;
+  color: #333; /* Maintain dark gray text */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Add hover effect for navbar items */
+nav a:hover {
+  color: #337ab7; /* Use the same blue as child component headings */
+}
+
+.brand-name {
+  display: flex;
+  align-items: center;
+  color: #007bff; /* Maintain blue brand name */
+}
+
+.brand-logo {
+  width: 3rem;
+  height: 3rem;
+  margin-right: 1rem;
+}
+
+/* Content styles */
+section.content {
+  flex: 1; /* Takes up remaining space */
+  padding: 2rem;
+  background-color: #f5f5f5; /* Maintain light gray background for content */
+}
