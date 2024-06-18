@@ -16,6 +16,7 @@ import { HomeComponent } from './home/home.component';
       </a>
       <a routerLink="/play"> Play!</a>
       <a routerLink="/host">  HOST!</a>
+      <a routerLink="/about"> About</a>
       </nav>
 
     <section class = "content"> 
