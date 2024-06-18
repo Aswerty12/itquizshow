@@ -28,7 +28,7 @@
             "assets": [
               {
                 "glob": "**/*",
-                "input": "public"
+                "input": "projects/itquizshow/public"
               }
             ],
             "styles": [
