@@ -1,5 +1,5 @@
-/*import { Injectable } from '@angular/core';
-import { AngularFireObject, AngularFireDatabase } from '@angular/fire/database'; // Assuming Firebase usage
+import { Injectable } from '@angular/core';
+import { AngularFireObject, AngularFireDatabase } from '@angular/fire/compat/database'; // Assuming Firebase usage
 
 interface Question {
   // Define the structure of your question objects here
@@ -41,4 +41,3 @@ export class HostService {
     await this.syncObject.update({ state: 'preQuestion', currentQuestion: this.syncObject.snapshot.val()?.currentQuestion + 1 ?? 0 });
   }
 }
-*/

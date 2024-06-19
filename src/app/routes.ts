@@ -4,12 +4,18 @@ import { PlayerComponent } from './player/player.component';
 import { HostComponent } from './host/host.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
+import { LobbyComponent } from './lobby/lobby.component';
 
 const routeConfig: Routes = [
     {
       path: '',
       component: HomeComponent,
       title: 'Home page',
+    },
+    {
+      path: 'lobby',
+      component: LobbyComponent,
+      title: "Join a game",
     },
     {
       path: 'play',

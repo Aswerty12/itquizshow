@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
           <img class="brand-logo" src="logo.svg" alt="logo" aria-hidden="true" />
         </header>
       </a>
-      <a routerLink="/play"> Play!</a>
+      <a routerLink="/lobby"> Play!</a>
       <a routerLink="/host">  HOST!</a>
       <a routerLink="/about"> About</a>
       </nav>

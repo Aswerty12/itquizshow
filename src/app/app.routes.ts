@@ -5,6 +5,7 @@ import { PlayerComponent } from './player/player.component';
 import { HostComponent } from './host/host.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
+import { LobbyComponent } from './lobby/lobby.component';
 
 
 const routeConfig: Routes = [
@@ -15,6 +16,11 @@ const routeConfig: Routes = [
         component: HostComponent,
         title : 'Hosting'
     },
+    {
+        path: 'lobby',
+        component: LobbyComponent,
+        title: "Join a game",
+      },
     {
         path: 'play',
         component: PlayerComponent,
