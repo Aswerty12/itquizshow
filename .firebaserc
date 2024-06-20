@@ -1,6 +1,7 @@
 {
   "projects": {
-    "itquizshow": "itquizshow"
+    "itquizshow": "itquizshow",
+    "default": "itquizshow"
   },
   "targets": {},
   "etags": {},

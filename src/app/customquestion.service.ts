@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as firebase from "firebase/app"
-import { initializeApp } from '@angular/fire/app';
 import { getFirestore, Firestore, collection, addDoc, getDocs, getDoc, doc, DocumentData } from 'firebase/firestore';
 import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
 import { environment } from '../environment';
+
+
 
 interface Question {
   question: string;
@@ -16,7 +16,7 @@ interface Question {
   providedIn: 'root'
 })
 export class CustomQuestionService {
-
+  //Should this be  firestore = inject(Firestore) ???
   constructor(private firestore: Firestore) {}
   
   /**
