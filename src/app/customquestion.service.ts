@@ -5,7 +5,7 @@ import { environment } from '../environment';
 
 
 
-interface Question {
+export interface Question {
   question: string;
   answer: string;
   level: string; // "EASY", "AVERAGE", "DIFFICULT", "CLINCHER"

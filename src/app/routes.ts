@@ -6,6 +6,13 @@ import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
 import { LobbyComponent } from './lobby/lobby.component';
 
+
+import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/auth-guard';
+
+
+const redirectUnauthorizedToLobby = () => redirectUnauthorizedTo(['lobby']);
+const redirectLoggedInToPlay = () => redirectLoggedInTo(['play']);
+
 const routeConfig: Routes = [
     {
       path: '',
@@ -16,11 +23,13 @@ const routeConfig: Routes = [
       path: 'lobby',
       component: LobbyComponent,
       title: "Join a game",
+      ...canActivate(redirectLoggedInToPlay),
     },
     {
       path: 'play',
       component: PlayerComponent,
       title: 'Player View',
+      ...canActivate(redirectUnauthorizedToLobby),
     },
     {
       path: 'host',
