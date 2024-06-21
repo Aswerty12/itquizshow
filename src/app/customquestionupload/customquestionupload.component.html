@@ -1,0 +1,23 @@
+<form>
+    <!-- File Upload Input with Label -->
+    <div>
+      <label for="file-upload">Upload File:</label>
+      <input type="file" id="file-upload" (change)="onFileSelected($event)" />
+    </div>
+  
+    <!-- Upload Questions Button -->
+    <div>
+      <button type="button" (click)="uploadQuestions()">Upload Questions</button>
+    </div>
+  
+    <!-- Display Uploaded Question Sets -->
+    <div *ngIf="uploadedQuestionSets.length > 0">
+      <h3>Uploaded Question Sets:</h3>
+      <ul>
+        <li *ngFor="let questionSetId of uploadedQuestionSets">
+          {{ questionSetId }}
+        </li>
+      </ul>
+    </div>
+  </form>
+  
