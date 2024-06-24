@@ -82,8 +82,14 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
   async getGameData(gameId: string) {
     this.isLoading = true;
     try {
-      this.gameData = await this.lobbyService.getGameData(gameId);
-      this.updateLobbyPlayers();
+      // Get game data from LobbyService
+      this.gameData = await this.lobbyService.getGameData(gameId); 
+
+      // Update the list of players in the lobby if gameData is found
+      if (this.gameData) {
+        this.players = this.gameData.players; 
+      }
+
       this.isLoading = false;
     } catch (error) {
       this.isLoading = false;

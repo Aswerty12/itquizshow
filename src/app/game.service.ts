@@ -175,6 +175,16 @@ export class GameService {
     });
     this.gameStateSubject.next(this.gameState);
   }
+  getPlayerIdByGameId(gameId: string): Promise<string | null> {
+    return new Promise(resolve => {
+      const player = this.players.find(p => p.id === gameId);
+      if (player) {
+        resolve(player.id);
+      } else {
+        resolve(null);
+      }
+    });
+  }
 
   // Resume the game
   async resumeGame() {
@@ -199,6 +209,10 @@ export class GameService {
   // Get all players 
   getPlayers(): Player[] {
     return this.players;
+  }
+
+  public getGameState(): string {
+    return this.gameState;
   }
 
   // Load questions from Firestore (you've already implemented this in CustomQuestionService)

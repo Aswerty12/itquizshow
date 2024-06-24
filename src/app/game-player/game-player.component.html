@@ -1,0 +1,22 @@
+<div class="game-container" *ngIf="gameService.getGameState() === 'started'">
+  <h2>Round {{ gameService.getCurrentRound() }}</h2> 
+  <h2>Question {{ currentQuestion?.question }}</h2>
+  <p class="timer">Time Remaining: {{ timer }}</p>
+
+  <input 
+    type="text" 
+    [(ngModel)]="answer" 
+    placeholder="Enter your answer" 
+    [disabled]="isSubmitting"
+    class="answer-input">
+  <button 
+    (click)="submitAnswer()" 
+    [disabled]="isSubmitting"
+    class="submit-button">
+    {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+  </button>
+
+  <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+  <p class="score">Your Score: {{ playerScore }}</p>
+</div>

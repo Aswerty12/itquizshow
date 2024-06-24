@@ -32,7 +32,7 @@ const routeConfig: Routes = [
         component: PlayerComponent,
         title : 'Playing',
         ...canActivate(redirectUnauthorizedToLobby),
-    },
+    }, //Add new route guards when not logged into game-play
     {
         path :'about',
         component: AboutComponent,
