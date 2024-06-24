@@ -44,6 +44,10 @@ export class GameService {
 
   constructor(private firestore: AngularFirestore) {}
 
+  get currentGameId(): string {
+    return this.gameId;
+  }
+
   // Create a new game with a specified question set ID
   async createNewGame(questionSetId: string): Promise<void> {
     this.gameId = this.firestore.createId(); // Generate a unique game ID

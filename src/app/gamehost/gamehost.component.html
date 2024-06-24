@@ -1,0 +1,21 @@
+<div *ngIf="gameState === 'stopped'">
+    <button (click)="startRound()">Start Game</button>
+  </div>
+  
+  <div *ngIf="gameState === 'started'">
+    <h2>Round {{ roundNumber }}</h2>
+    <h2>Question {{ currentQuestion?.question }}</h2>
+    <p>Time Remaining: {{ timer }}</p>
+    <button (click)="nextQuestion()">Next Question</button>
+    <h2>Leaderboard</h2>
+    <ul>
+      <li *ngFor="let player of leaderboard">
+        {{ player.name }} - {{ player.score }} points
+      </li>
+    </ul>
+  </div>
+  
+  <div *ngIf="gameState === 'paused'">
+    <p>Game Paused</p>
+    <button (click)="resumeGame()">Resume Game</button>
+  </div>
