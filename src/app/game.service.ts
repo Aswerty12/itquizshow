@@ -64,11 +64,10 @@ export class GameService {
     });
   }
   // Join a game using the game ID
-  async joinGame(gameId: string, playerName: string): Promise<void> {
+  async joinGame(gameId: string, playerName: string): Promise<string> {
     this.gameId = gameId;
   
     try {
-      // Load game state and questions from Firestore
       const gameDoc = await this.firestore.collection('games').doc(this.gameId).get().toPromise();
   
       if (gameDoc && gameDoc.exists) {
@@ -80,7 +79,6 @@ export class GameService {
         this.currentQuestionIndex = gameData.currentQuestionIndex || 0;
         this.roundNumber = gameData.roundNumber || 1;
   
-        // Add the player to the game (update Firestore)
         const newPlayerId = this.firestore.createId();
         const newPlayer: Player = { 
           id: newPlayerId, 
@@ -95,11 +93,14 @@ export class GameService {
         await this.firestore.collection('games').doc(this.gameId).update({
           players: this.players
         });
+  
+        return newPlayerId;
       } else {
         throw new Error(`Game with ID ${this.gameId} does not exist.`);
       }
     } catch (error) {
       console.error("Error joining the game: ", error);
+      throw error; // Re-throw the error to be handled by the calling component
     }
   }
   
@@ -186,6 +187,20 @@ export class GameService {
     });
   }
 
+  getPlayerById(playerId: string): Player | undefined {
+    return this.players.find(p => p.id === playerId);
+  }
+
+
+  async isValidGame(gameId: string): Promise<boolean> {
+    try {
+      const gameDoc = await this.firestore.collection('games').doc(gameId).get().toPromise();
+      return gameDoc?.exists ?? false;
+    } catch (error) {
+      console.error('Error checking game validity:', error);
+      return false;
+    }
+  }
   // Resume the game
   async resumeGame() {
     this.gameState = 'started';

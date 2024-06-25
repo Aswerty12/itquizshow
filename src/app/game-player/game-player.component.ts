@@ -22,6 +22,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   playerName: string = ''; 
   playerScore: number = 0;
   answer: string = ''; // Player's current answer
+  playerId: string = '';
 
   errorMessage: string = ''; // To display error messages
   isSubmitting: boolean = false; // To track if an answer is being submitted
@@ -40,35 +41,33 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
-    // Get the game ID from the route
+    // Get the game ID from the route parameters
     this.gameId = this.route.snapshot.paramMap.get('gameId') || '';
-
-    //Get player's name and score
+    // Get the player ID from the query parameters
+    this.playerId = this.route.snapshot.queryParamMap.get('playerId') || '';
+  
+    // Subscribe to game state changes
+    this.gameStateSubscription = this.gameService.gameState$.subscribe(state => {
+      if (state === 'started') {
+        this.startTimer();
+      } else if (state === 'stopped' || state === 'paused') {
+        clearInterval(this.timerInterval);
+      }
+    });
+  
+    // Subscribe to question changes
+    this.questionSubscription = this.gameService.gameState$.subscribe(() => {
+      this.currentQuestion = this.gameService.getCurrentQuestion();
+    });
+  
+    // Get player's name and score
     this.playerSubscription = this.gameService.gameState$.subscribe(() => {
-      const player = this.gameService.getPlayers().find(p => p.id === this.gameId); // Find the player using the gameId 
+      const player = this.gameService.getPlayers().find(p => p.id === this.playerId);
       if (player) {
         this.playerName = player.name;
         this.playerScore = player.score;
       }
     });
-
-    // Subscribe to game state changes
-    this.gameStateSubscription = this.gameService.gameState$.subscribe(state => {
-      // Access gameState from GameService
-      if (state === 'started') {
-        this.startTimer(); 
-      } else if (state === 'stopped' || state === 'paused') {
-        // Stop the timer if the game is stopped or paused
-        clearInterval(this.timerInterval); 
-      }
-    });
-    // Subscribe to question changes
-    this.questionSubscription = this.gameService.gameState$.subscribe(() => {
-      // Get the current question from the GameService
-      this.currentQuestion = this.gameService.getCurrentQuestion();
-    });
-
-    
   }
 
   ngOnDestroy(): void {
@@ -86,20 +85,13 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
       return;
     }
   
-    this.isSubmitting = true; // You'd need to add this property to your component
+    this.isSubmitting = true;
     try {
-      const playerId = await this.gameService.getPlayerIdByGameId(this.gameId);
-      if (playerId) {
-        await this.gameService.submitAnswer(playerId, this.answer);
-        this.answer = ''; // Reset the answer input
-        // Maybe show a success message
-      } else {
-        // Show an error message to the user
-        this.errorMessage = "Player not found in the game.";
-      }
+      await this.gameService.submitAnswer(this.playerId, this.answer);
+      this.answer = '';
+      // Maybe show a success message
     } catch (error) {
       console.error("Error submitting answer:", error);
-      // Show an error message to the user
       this.errorMessage = "An error occurred while submitting your answer.";
     } finally {
       this.isSubmitting = false;

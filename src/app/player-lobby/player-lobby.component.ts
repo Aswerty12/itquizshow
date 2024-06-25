@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { GameService } from '../game.service';
 
 interface User {
   displayName?: string | null;
@@ -23,9 +24,12 @@ export class PlayerLobbyComponent implements OnInit {
   playerName: string = '';
   isLoading = false;
 
+  errorMessage: string = ''; // To display error messages
+
   constructor(
     private router: Router,
-    private accountService: AccountService
+    private accountService: AccountService,
+    private gameService : GameService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -43,11 +47,12 @@ export class PlayerLobbyComponent implements OnInit {
   async joinGame() {
     this.isLoading = true;
     try {
-      // You might want to add some game joining logic here
-      await this.router.navigate(['/game-player', this.gameId]);
+      const playerId = await this.gameService.joinGame(this.gameId, this.playerName);
+      await this.router.navigate(['/game-player', this.gameId], { queryParams: { playerId } });
     } catch (error) {
       console.error('Error joining game:', error);
       // Handle error (e.g., show a message to the user)
+      this.errorMessage = "Failed to join the game. Please try again.";
     } finally {
       this.isLoading = false;
     }

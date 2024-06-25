@@ -23,7 +23,10 @@
           </button>
         </div>
       </div>
-  
+      
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
       <div *ngIf="isLoading" class="loading-overlay">
         <div class="loading-spinner"></div>
         <p>Joining game...</p>
