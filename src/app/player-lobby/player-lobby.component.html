@@ -1,0 +1,32 @@
+<div class="lobby-container">
+    <header class="lobby-header">
+      <h1 class="lobby-title">Kahoot Clone Player Lobby</h1>
+      <p class="player-welcome">Welcome, {{ playerName }}!</p>
+    </header>
+  
+    <main class="lobby-main">
+      <div class="game-join-section" *ngIf="!gameId">
+        <h2 class="section-title">Join a Game</h2>
+        <div class="input-group">
+          <input 
+            type="text" 
+            placeholder="Enter Game ID" 
+            [(ngModel)]="gameId"
+            class="game-id-input"
+          >
+          <button 
+            (click)="joinGame()" 
+            class="join-button"
+            [disabled]="!gameId || isLoading"
+          >
+            Join Game
+          </button>
+        </div>
+      </div>
+  
+      <div *ngIf="isLoading" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p>Joining game...</p>
+      </div>
+    </main>
+  </div>
