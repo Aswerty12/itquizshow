@@ -1,9 +1,30 @@
-<div *ngIf="gameState === 'stopped'">
-    <button (click)="startRound()">Start Game</button>
+
+  <div *ngIf="gameState === 'stopped'">
+    <h2>Upload Custom Question Set</h2>
+    <input title="Upload Question Set" type="file" (change)="onFileSelected($event)" accept=".csv">
+    <button (click)="uploadQuestions()">Upload Questions</button>
+  
+    <h2>Select Question Set</h2>
+    <select title="Select Question Set" [(ngModel)]="selectedQuestionSetId">
+      <option *ngFor="let setId of uploadedQuestionSets" [value]="setId">{{ setId }}</option>
+    </select>
+  
+    <button (click)="createGame()">Create Game</button>
+  </div>
+  
+  <div *ngIf="gameState === 'waiting'">
+    <h2>Waiting Room</h2>
+    <p>Game Code: {{ gameCode }}</p>
+    <h3>Players:</h3>
+    <ul>
+      <li *ngFor="let player of players">{{ player.name }}</li>
+    </ul>
+    <button (click)="startGame()">Start Game</button>
   </div>
   
   <div *ngIf="gameState === 'started'">
     <h2>Round {{ roundNumber }}</h2>
+    <h2>{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
     <h2>Question {{ currentQuestion?.question }}</h2>
     <p>Time Remaining: {{ timer }}</p>
     <button (click)="nextQuestion()">Next Question</button>
@@ -18,4 +39,15 @@
   <div *ngIf="gameState === 'paused'">
     <p>Game Paused</p>
     <button (click)="resumeGame()">Resume Game</button>
+  </div>
+
+  <div *ngIf="gameState === 'ended'">
+    <h2>Game Over</h2>
+    <h3>Final Leaderboard</h3>
+    <ol>
+      <li *ngFor="let player of leaderboard">
+        {{ player.name }} - {{ player.score }} points
+      </li>
+    </ol>
+    <button (click)="createGame()">Start New Game</button>
   </div>

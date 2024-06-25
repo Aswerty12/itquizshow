@@ -27,17 +27,17 @@ export class CustomQuestionService {
   uploadQuestions(file: File): Promise<void> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = (event: ProgressEvent<FileReader>) => { // Typed event
-        if (event.target && typeof event.target.result === 'string') {
-          this.parseCSV(event.target.result)
-            .then(questions => {
-              this.storeQuestions(questions)
-                .then(() => resolve())
-                .catch(error => reject(error));
-            })
-            .catch(error => reject(error));
-        } else {
-          reject(new Error('Invalid file content'));
+      reader.onload = async (event: ProgressEvent<FileReader>) => { // Typed event
+        try {
+          if (event.target && typeof event.target.result === 'string') {
+            const questions = await this.parseCSV(event.target.result);
+            await this.storeQuestions(questions);
+            resolve();
+          } else {
+            reject(new Error('Invalid file content'));
+          }
+        } catch (error) {
+          reject(error);
         }
       };
       reader.onerror = (error) => reject(error);
