@@ -31,6 +31,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   gameStateSubscription: Subscription | null = null;
   questionSubscription: Subscription | null = null;
   playerSubscription: Subscription | null = null;
+  timerSubscription: Subscription | null = null;
 
   constructor(
     public gameService: GameService,

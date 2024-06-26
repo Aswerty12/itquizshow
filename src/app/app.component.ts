@@ -32,26 +32,5 @@ import { CommonModule } from '@angular/common';
 })
 export class AppComponent {
   title = 'ITQuizshow';
-  /*firestore: Firestore = inject(Firestore);
-  items$: Observable<any[]>;
-  hasData = false;
-
-  constructor() {
-    const aCollection = collection(this.firestore, 'items')
-    this.items$ = collectionData(aCollection);
-
-    // Check if data exists initially
-    this.items$.subscribe(data => {
-      this.hasData = data.length > 0;
-    });
-  } */
 }
 
-/* 
-Test code for the firestore
-      <ul>
-        <li class="text" *ngFor="let item of items$ | async">
-          {{item.name}}
-        </li>
-      </ul>
-*/

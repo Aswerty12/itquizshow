@@ -22,7 +22,7 @@ export interface GameData {
 
 interface QuestionSet {
   questions: Question[];
-}
+} //Deprecated
 
 
 @Injectable({
@@ -36,8 +36,9 @@ export class GameService {
   private players: Player[] = [];
   private currentQuestionIndex: number = 0;
   private roundNumber: number = 1;
-  private gameState: string = 'stopped'; // 'started', 'stopped', 'paused'
-
+  private gameState: string = 'stopped'; 
+  private timerValue: number = 30; // Default timer value
+  private timerInterval: any;
 
   private gameStateSubject = new BehaviorSubject<string>('stopped');
   gameState$ = this.gameStateSubject.asObservable();
@@ -47,6 +48,9 @@ export class GameService {
 
   private currentQuestionSubject = new BehaviorSubject<Question | null>(null);
   currentQuestion$ = this.currentQuestionSubject.asObservable();
+
+  private timerSubject = new BehaviorSubject<number>(this.timerValue);
+  timer$ = this.timerSubject.asObservable();
 
   constructor(private firestore: AngularFirestore ,private customQuestionService: CustomQuestionService) {}
 
@@ -142,24 +146,20 @@ export class GameService {
     if (this.currentQuestionIndex >= this.questions.length - 1) {
       // Trigger end of round actions
       this.gameState = 'stopped';
-      /*await this.firestore.collection('games').doc(this.gameId).update({
-        gameState: 'stopped',
-        currentQuestionIndex: 0, // Reset to the first question
-      });*/
       this.currentQuestionIndex = 0;
       this.gameStateSubject.next(this.gameState);
+      this.stopGame();
       await this.updateGameState();
       return;
-    } 
+    } else{
 
+    
     this.currentQuestionIndex++;
+    this.currentQuestionSubject.next(this.questions[this.currentQuestionIndex]);
+    this.startTimer();
     await this.updateGameState();
-
-    // Update game state in Firestore
-
-    /*await this.firestore.collection('games').doc(this.gameId).update({
-      currentQuestionIndex: this.currentQuestionIndex 
-    });*/
+    }
+    
   }
 
   // Handle player answers
@@ -190,12 +190,9 @@ export class GameService {
   // Pause the game
   async pauseGame() {
     this.gameState = 'paused';
-    // Update game state in Firestore to 'paused'
-    /*await this.firestore.collection('games').doc(this.gameId).update({
-      gameState: 'paused'
-    });*/
     this.gameStateSubject.next(this.gameState);
     await this.updateGameState();
+    this.stopTimer();
   }
   getPlayerIdByGameId(gameId: string): Promise<string | null> {
     return new Promise(resolve => {
@@ -225,10 +222,6 @@ export class GameService {
   // Resume the game
   async resumeGame() {
     this.gameState = 'started';
-    // Update game state in Firestore to 'started'
-    /*await this.firestore.collection('games').doc(this.gameId).update({
-      gameState: 'started'
-    });*/
     this.gameStateSubject.next(this.gameState);
     await this.updateGameState();
   }
@@ -265,10 +258,18 @@ export class GameService {
     }
   }
   async startGame(): Promise<void> {
-    this.gameStateSubject.next('started');
+    this.gameState = "started";
+    this.gameStateSubject.next(this.gameState);
     this.currentQuestionSubject.next(this.questions[0]);
     await this.updateGameState();
+    this.startTimer(); // Start the timer when the game starts
   }
+  public stopGame(): void {
+    this.gameState = 'stopped';
+    this.gameStateSubject.next(this.gameState);
+    this.stopTimer();
+  }
+
   async endGame(): Promise<void> {
     // Clean up game state, calculate final scores, etc.
     this.gameStateSubject.next('ended');
@@ -294,4 +295,25 @@ export class GameService {
 
     await this.firestore.collection('games').doc(this.gameId).update(gameData);
   }
+
+  private startTimer() {
+    this.stopTimer();
+    this.timerValue = 30; // Reset timer value
+    this.timerSubject.next(this.timerValue);
+
+    this.timerInterval = setInterval(() => {
+      this.timerValue--;
+      this.timerSubject.next(this.timerValue);
+      if (this.timerValue <= 0) {
+        this.stopTimer();
+        this.nextQuestion();
+      }
+    }, 1000);
+  }
+
+  private stopTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  } //Make sure these two are called
 }

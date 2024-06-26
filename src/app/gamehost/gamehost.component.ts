@@ -30,7 +30,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   private gameStateSubscription: Subscription | null = null;
   private questionSubscription: Subscription | null = null;
   private playersSubscription: Subscription | null = null;
-  private timerInterval: any;
+  private timerSubscription: Subscription | null = null
 
   constructor(
     private gameService: GameService,
@@ -39,12 +39,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.gameStateSubscription = this.gameService.gameState$.subscribe(state => {
-      this.gameState = state;
-      if (state === 'started') {
-        this.startTimer();
-      } else if (state === 'stopped' || state === 'paused') {
-        this.stopTimer();
-      }
+      this.gameState = state;     
     });
 
     this.questionSubscription = this.gameService.currentQuestion$.subscribe(question => {
@@ -59,6 +54,10 @@ export class GameHostComponent implements OnInit, OnDestroy {
       this.updateLeaderboard();
     });
 
+    this.timerSubscription = this.gameService.timer$.subscribe(timerValue => {
+      this.timer = timerValue;
+    });
+
     this.loadQuestionSets();
   }
 
@@ -66,7 +65,8 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.gameStateSubscription?.unsubscribe();
     this.questionSubscription?.unsubscribe();
     this.playersSubscription?.unsubscribe();
-    this.stopTimer();
+    this.timerSubscription?.unsubscribe();
+    this.gameService.stopGame();
   }
 
   async loadQuestionSets() {
@@ -129,23 +129,6 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.gameService.endGame();
   }
 
-  private startTimer() {
-    this.stopTimer();
-    this.timer = 30;
-    this.timerInterval = setInterval(() => {
-      this.timer--;
-      if (this.timer <= 0) {
-        this.stopTimer();
-        this.gameService.nextQuestion();
-      }
-    }, 1000);
-  }
-
-  private stopTimer() {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-  }
 
   private updateLeaderboard() {
     this.leaderboard = [...this.players].sort((a, b) => b.score - a.score);
