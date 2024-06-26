@@ -56,5 +56,10 @@ export class PlayerLobbyComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+    
+  }
+  logout() {
+    this.accountService.logout();
+    this.router.navigate(['/']); // Navigate to the home page or another desired route
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import {  Player } from '../game.service';
+import { Player } from '../game.service';
 import { Question } from '../customquestion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,8 +39,6 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
-
-
   ngOnInit(): void {
     // Get the game ID from the route parameters
     this.gameId = this.route.snapshot.paramMap.get('gameId') || '';
@@ -49,25 +47,26 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   
     // Subscribe to game state changes
     this.gameStateSubscription = this.gameService.gameState$.subscribe(state => {
-      if (state === 'started') {
-        this.startTimer();
-      } else if (state === 'stopped' || state === 'paused') {
-        clearInterval(this.timerInterval);
-      }
+      this.handleGameStateChange(state);
     });
   
     // Subscribe to question changes
-    this.questionSubscription = this.gameService.gameState$.subscribe(() => {
-      this.currentQuestion = this.gameService.getCurrentQuestion();
+    this.questionSubscription = this.gameService.currentQuestion$.subscribe(question => {
+      this.currentQuestion = question;
     });
   
     // Get player's name and score
-    this.playerSubscription = this.gameService.gameState$.subscribe(() => {
-      const player = this.gameService.getPlayers().find(p => p.id === this.playerId);
+    this.playerSubscription = this.gameService.players$.subscribe(players => {
+      const player = players.find(p => p.id === this.playerId);
       if (player) {
         this.playerName = player.name;
         this.playerScore = player.score;
       }
+    });
+
+    // Subscribe to timer changes
+    this.timerSubscription = this.gameService.timer$.subscribe(timerValue => {
+      this.timer = timerValue;
     });
   }
 
@@ -75,9 +74,17 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
     this.gameStateSubscription?.unsubscribe();
     this.questionSubscription?.unsubscribe();
     this.playerSubscription?.unsubscribe();
+    this.timerSubscription?.unsubscribe();
   }
-  
 
+  // Handle game state changes
+  private handleGameStateChange(state: string): void {
+    if (state === 'started') {
+      this.startTimer();
+    } else if (state === 'stopped' || state === 'paused') {
+      this.stopTimer(); //placeholder for stopTimer event
+    }
+  }
 
   // Handle player answer submission
   async submitAnswer() {
@@ -100,16 +107,12 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   }
 
   // Start the timer 
-  private timerInterval: any; // Add a variable to store the interval
-
   private startTimer() {
-    this.timer = 30;
-    this.timerInterval = setInterval(() => {
-      this.timer--;
-      if (this.timer <= 0) {
-        clearInterval(this.timerInterval); 
-        this.gameService.nextQuestion();
-      }
-    }, 1000);
+    this.timer = 30; // Initialize timer value if not already set by the service
+  }
+
+  // Stop the timer
+  private stopTimer() {
+    // No need to manually stop the timer, the service handles this
   }
 }

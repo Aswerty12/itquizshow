@@ -100,4 +100,8 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.gameStateSubscription?.unsubscribe();
   }
+  logout() {
+    this.accountService.logout(); // Call the logout method in the AccountService
+    this.router.navigate(['/']); // Navigate to the home page or another desired route
+  }
 }

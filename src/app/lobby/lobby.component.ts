@@ -59,6 +59,7 @@ export class LobbyComponent {
   logout() {
     this.accountService.logout();
     this.isLoggedIn = false;
+    this.router.navigate(['/'])
   }
 }
 
