@@ -1,0 +1,62 @@
+.lobby-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+    font-family: sans-serif;
+  }
+  
+  .lobby-title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+  
+  .google-login-button,
+  .anonymous-login-button,
+  .logout-button,
+  .join-game-button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  .google-login-button {
+    background-color: #4285F4; /* Google blue */
+  }
+  
+  .anonymous-login-button {
+    background-color: #f0f0f0; /* Light gray */
+    color: black;
+  }
+  
+  .logout-button {
+    background-color: #f44336; /* Red */
+  }
+  
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100px;
+    border: 5px solid #f0f0f0; /* Gray */
+    border-radius: 50%;
+    border-top: 5px solid #4CAF50; /* Green */
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

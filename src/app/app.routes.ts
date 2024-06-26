@@ -1,19 +1,22 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HomeComponent } from './home/home.component';
-import { PlayerComponent } from './player/player.component';
-import { HostComponent } from './host/host.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
-import { LobbyComponent } from './lobby/lobby.component';
-import { PlayerLobbyComponent } from './player-lobby/player-lobby.component';
-import { GamePlayerComponent } from './game-player/game-player.component';
+import { LobbyComponent } from './lobby/lobby.component'; //player login
+import { PlayerLobbyComponent } from './player-lobby/player-lobby.component'; //player lobby
+import { GamePlayerComponent } from './game-player/game-player.component'; //player game
+import { GameLoginComponent  } from './game-login/game-login.component'; //login
+import { GameLobbyComponent } from './game-lobby/game-lobby.component'; //lobby
+import { GameHostComponent } from './gamehost/gamehost.component';// game for host
 
 import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/auth-guard';
-import { GameLobbyGuard } from './guards/game-lobby.guard'; // You'll need to create this guard
+import { GameLobbyGuard } from './guards/game-lobby.guard'; //Guard for player side
+import { HostLobbyGuard } from './guards/host-lobby.guard'; // Guard for host side
 
 const redirectUnauthorizedToLobby = () => redirectUnauthorizedTo(['lobby']);
 const redirectLoggedInToPlayerLobby = () => redirectLoggedInTo(['player-lobby']);
+const redirectLoggedInToGameLobby = () => redirectLoggedInTo(['game-lobby']);
 
 const routeConfig: Routes = [
     {
@@ -22,15 +25,9 @@ const routeConfig: Routes = [
         title: 'Home page'
     },
     {
-        path: 'host',
-        component: HostComponent,
-        title: 'Hosting',
-        ...canActivate(redirectUnauthorizedToLobby)
-    },
-    {
         path: 'lobby',
         component: LobbyComponent,
-        title: "Join a game",
+        title: "Log in for Players",
         ...canActivate(redirectLoggedInToPlayerLobby),
     },
     {
@@ -46,10 +43,22 @@ const routeConfig: Routes = [
         canActivate: [GameLobbyGuard],
     },
     {
-        path: 'play',
-        component: PlayerComponent,
-        title: 'Playing',
-        ...canActivate(redirectUnauthorizedToLobby),
+        path: 'host-login',
+        component: GameLoginComponent,
+        title: "Log in for Hosting",
+        ...canActivate(redirectLoggedInToGameLobby)
+    },
+    {
+        path: 'game-lobby',
+        component: GameLoginComponent,
+        title: "Create A Game",
+        ...canActivate(redirectUnauthorizedToLobby)
+    },
+    {
+        path :'game-host/:gameId',
+        component: GameHostComponent,
+        title: "Hosting a Game",
+        canActivate: [HostLobbyGuard],
     },
     {
         path: 'about',

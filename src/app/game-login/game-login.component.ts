@@ -1,30 +1,29 @@
-//LOBBY FOR Players
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
-import { Router } from '@angular/router'; // Import Router for navigation
-
-
-
-
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-lobby',
-  templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.scss']
+  selector: 'app-game-login',
+  templateUrl: './game-login.component.html',
+  styleUrls: ['./game-login.component.scss']
 })
-export class LobbyComponent {
+export class GameLoginComponent implements OnInit, OnDestroy {
 
-  isLoading = false; // Flag for loading state
-  isLoggedIn = false; // Flag for login status
+  isLoading = false;
+  isLoggedIn = false;
 
   constructor(
     private accountService: AccountService,
-    private router: Router // Inject the Router service
+    private router: Router
   ) {
-    // Check login status on component initialization
     this.accountService.isLoggedIn().then(loggedIn => {
       this.isLoggedIn = loggedIn;
     });
+  }
+
+  ngOnInit(): void {
+    // No specific actions required for ngOnInit in this component
   }
 
   async loginWithGoogle() {
@@ -33,8 +32,8 @@ export class LobbyComponent {
       const user = await this.accountService.loginWithGoogle();
       this.isLoggedIn = true;
       this.isLoading = false;
-      // Redirect to the game lobby or the desired route after successful login
-      this.router.navigate(['/game-lobby']); 
+      // Redirect to the player lobby after successful login
+      this.router.navigate(['/player-lobby']); 
     } catch (error) {
       this.isLoading = false;
       console.error('Error during Google login:', error);
@@ -48,8 +47,8 @@ export class LobbyComponent {
       const user = await this.accountService.loginAnonymously();
       this.isLoggedIn = true;
       this.isLoading = false;
-      // Redirect to the game lobby or the desired route after successful login
-      this.router.navigate(['/game-lobby']);
+      // Redirect to the player lobby after successful login
+      this.router.navigate(['/player-lobby']);
     } catch (error) {
       this.isLoading = false;
       console.error('Error during anonymous login:', error);
@@ -60,7 +59,9 @@ export class LobbyComponent {
   logout() {
     this.accountService.logout();
     this.isLoggedIn = false;
-    this.router.navigate(['/'])
+  }
+
+  ngOnDestroy(): void {
+    // No specific actions required for ngOnDestroy in this component
   }
 }
-

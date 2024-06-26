@@ -1,10 +1,9 @@
-<p>lobby works! Lobby to enter games</p>
 <div class="lobby-container">
-    <h1 class="lobby-title">Kahoot Clone Lobby</h1>
+    <h1 class="lobby-title">Kahoot Clone Login</h1>
   
     <div *ngIf="!isLoggedIn">
       <button (click)="loginWithGoogle()" class="google-login-button">
-        <img src="google-logo.svg" alt="Google Logo">
+        <img src="/google-logo.svg" alt="Google Logo">
         Login with Google
       </button>
   
@@ -17,7 +16,6 @@
       <h2>Welcome!</h2>
       <p>You are logged in.</p>
       <button (click)="logout()" class="logout-button">Logout</button>
-      <a routerLink="/game-lobby" class="join-game-button">Join a Game</a> 
     </div>
   
     <div *ngIf="isLoading">
