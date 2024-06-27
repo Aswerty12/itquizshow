@@ -1,12 +1,45 @@
-import { bootstrapApplication, provideProtractorTestingSupport } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
+import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import {provideRouter} from '@angular/router';
+import { provideRouter } from '@angular/router';
+import { ApplicationConfig } from '@angular/core';
 import routeConfig from './app/routes';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { getDatabase, provideDatabase, connectDatabaseEmulator } from '@angular/fire/database';
+import { getAuth, provideAuth, connectAuthEmulator } from '@angular/fire/auth';
+import { getFirestore, provideFirestore, connectFirestoreEmulator } from '@angular/fire/firestore';
+import { environment } from './environments/environment';
 
+const firebaseProviders = [
+  provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+  provideDatabase(() => {
+    const database = getDatabase();
+    if (environment.useEmulators) {
+      connectDatabaseEmulator(database, 'localhost', 9000);
+    }
+    return database;
+  }),
+  provideAuth(() => {
+    const auth = getAuth();
+    if (environment.useEmulators) {
+      connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+    }
+    return auth;
+  }),
+  provideFirestore(() => {
+    const firestore = getFirestore();
+    if (environment.useEmulators) {
+      connectFirestoreEmulator(firestore, 'localhost', 8080);
+    }
+    return firestore;
+  })
+];
 
-bootstrapApplication(AppComponent, {
-  providers: [provideProtractorTestingSupport(), provideRouter(routeConfig), provideFirebaseApp(() => initializeApp({"projectId":"itquizshow","appId":"1:212745597603:web:b6412ededcad180ba50516","databaseURL":"https://itquizshow-default-rtdb.asia-southeast1.firebasedatabase.app","storageBucket":"itquizshow.appspot.com","apiKey":"AIzaSyCvoCs_-AijJ-avEST5bVakAYmoghduYdM","authDomain":"itquizshow.firebaseapp.com","messagingSenderId":"212745597603","measurementId":"G-HG7VM00FE4"})), provideDatabase(() => getDatabase())],
-}).catch((err) => console.error(err));
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter(routeConfig),
+    ...firebaseProviders
+  ]
+};
+
+bootstrapApplication(AppComponent, appConfig)
+  .catch((err) => console.error(err));

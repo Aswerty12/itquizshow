@@ -28,7 +28,7 @@ const routeConfig: Routes = [
         path: 'lobby',
         component: LobbyComponent,
         title: "Log in for Players",
-        ...canActivate(redirectLoggedInToPlayerLobby),
+        ...canActivate(redirectLoggedInToGameLobby),
     },
     {
         path: 'player-lobby',
@@ -50,7 +50,7 @@ const routeConfig: Routes = [
     },
     {
         path: 'game-lobby',
-        component: GameLoginComponent,
+        component: GameLobbyComponent,
         title: "Create A Game",
         ...canActivate(redirectUnauthorizedToLobby)
     },

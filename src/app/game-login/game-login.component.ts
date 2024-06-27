@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { Subscription } from 'rxjs';
-
+//THIS IS CONFUSING BUT THIS IS MEANT AS THE Game's host LOBBY
 @Component({
   selector: 'app-game-login',
   templateUrl: './game-login.component.html',
@@ -11,19 +11,23 @@ import { Subscription } from 'rxjs';
 export class GameLoginComponent implements OnInit, OnDestroy {
 
   isLoading = false;
-  isLoggedIn = false;
+  isLoggedIn: boolean = false;
+  private authSubscription!: Subscription;
 
   constructor(
     private accountService: AccountService,
     private router: Router
-  ) {
-    this.accountService.isLoggedIn().then(loggedIn => {
-      this.isLoggedIn = loggedIn;
-    });
-  }
+  ) 
+  {}
 
-  ngOnInit(): void {
-    // No specific actions required for ngOnInit in this component
+  ngOnInit() {
+    this.authSubscription = this.accountService.isLoggedIn().subscribe(loggedIn => {
+      this.isLoggedIn = loggedIn;
+      if (loggedIn) {
+        // Optionally, redirect to host (game) if user is already logged in
+        this.router.navigate(['/game-lobby']); // or wherever you want to redirect
+      }
+    });
   }
 
   async loginWithGoogle() {
@@ -33,7 +37,7 @@ export class GameLoginComponent implements OnInit, OnDestroy {
       this.isLoggedIn = true;
       this.isLoading = false;
       // Redirect to the player lobby after successful login
-      this.router.navigate(['/player-lobby']); 
+      this.router.navigate(['/game-lobby']); 
     } catch (error) {
       this.isLoading = false;
       console.error('Error during Google login:', error);
@@ -48,7 +52,7 @@ export class GameLoginComponent implements OnInit, OnDestroy {
       this.isLoggedIn = true;
       this.isLoading = false;
       // Redirect to the player lobby after successful login
-      this.router.navigate(['/player-lobby']);
+      this.router.navigate(['/game-lobby']);
     } catch (error) {
       this.isLoading = false;
       console.error('Error during anonymous login:', error);
@@ -62,6 +66,8 @@ export class GameLoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // No specific actions required for ngOnDestroy in this component
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 }

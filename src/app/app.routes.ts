@@ -14,7 +14,7 @@ import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angula
 import { GameLobbyGuard } from './guards/game-lobby.guard'; //Guard for player side
 import { HostLobbyGuard } from './guards/host-lobby.guard'; // Guard for host side
 
-const redirectUnauthorizedToLobby = () => redirectUnauthorizedTo(['lobby']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['host-login']);
 const redirectLoggedInToPlayerLobby = () => redirectLoggedInTo(['player-lobby']);
 const redirectLoggedInToGameLobby = () => redirectLoggedInTo(['game-lobby']);
 
@@ -34,7 +34,7 @@ const routeConfig: Routes = [
         path: 'player-lobby',
         component: PlayerLobbyComponent,
         title: "Player Lobby",
-        ...canActivate(redirectUnauthorizedToLobby),
+        ...canActivate(redirectUnauthorizedToLogin),
     },
     {
         path: 'game-player/:gameId',
@@ -50,9 +50,9 @@ const routeConfig: Routes = [
     },
     {
         path: 'game-lobby',
-        component: GameLoginComponent,
+        component: GameLobbyComponent,
         title: "Create A Game",
-        ...canActivate(redirectUnauthorizedToLobby)
+        ...canActivate(redirectUnauthorizedToLogin)
     },
     {
         path :'game-host/:gameId',

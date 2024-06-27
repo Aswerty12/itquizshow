@@ -8,6 +8,7 @@ import { LobbyService } from '../lobby.service'; // Import LobbyService
 import { Question } from '../customquestion.service';
 import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-game-lobby',
@@ -20,7 +21,7 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
   gameId: string = ''; 
   gameName: string = ''; 
   questionSetId: string = ''; 
-  playerName: string = '';
+  playerName: string = 'Anonymous User';
   isLoading = false;
 
   // To display the list of players in the lobby
@@ -29,6 +30,8 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
   // Subscription to listen to game state changes
   gameStateSubscription: Subscription | null = null; 
   gameData: GameData | null = null; 
+  private userSubscription!: Subscription;
+  private gameDataSubscription!: Subscription;
 
   constructor(
     private gameService: GameService,
@@ -38,10 +41,11 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.accountService.getCurrentUser().then(user => {
+    this.userSubscription = this.accountService.getCurrentUser().subscribe(user => {
       if (user) {
         this.playerName = user.displayName || user.email || 'Anonymous User';
       }
+
     });
   }
 
@@ -79,26 +83,31 @@ export class GameLobbyComponent implements OnInit, OnDestroy {
     }
   }
 
-  async getGameData(gameId: string) {
+  getGameData(gameId: string) {
     this.isLoading = true;
-    try {
-      // Get game data from LobbyService
-      this.gameData = await this.lobbyService.getGameData(gameId); 
-
-      // Update the list of players in the lobby if gameData is found
-      if (this.gameData) {
-        this.players = this.gameData.players; 
+    this.gameDataSubscription =this.lobbyService.getGameData(gameId).subscribe({
+      next: (data) => {
+        this.gameData = data;
+        if (this.gameData) {
+          this.players = this.gameData.players;
+        }
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error getting game data:', error);
+        this.isLoading = false;
       }
-
-      this.isLoading = false;
-    } catch (error) {
-      this.isLoading = false;
-      console.error('Error getting game data:', error);
-    }
+    });
   }
 
   ngOnDestroy(): void {
     this.gameStateSubscription?.unsubscribe();
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+    if (this.gameDataSubscription) {
+      this.gameDataSubscription.unsubscribe();
+    }
   }
   logout() {
     this.accountService.logout(); // Call the logout method in the AccountService
