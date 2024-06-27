@@ -4,6 +4,7 @@ import { AccountService } from '../account.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../game.service';
+import { Subscription } from 'rxjs';
 
 interface User {
   displayName?: string | null;
@@ -21,10 +22,12 @@ interface User {
 export class PlayerLobbyComponent implements OnInit {
 
   gameId: string = '';
-  playerName: string = '';
+  playerName: string = 'Anonymous User';
   isLoading = false;
 
   errorMessage: string = ''; // To display error messages
+
+  private userSubscription!: Subscription;
 
   constructor(
     private router: Router,
@@ -32,16 +35,13 @@ export class PlayerLobbyComponent implements OnInit {
     private gameService : GameService
   ) { }
 
-  async ngOnInit(): Promise<void> {
-    try {
-      const user = await this.accountService.getCurrentUser();
+  ngOnInit(): void {
+    this.userSubscription = this.accountService.getCurrentUser().subscribe(user => {
       if (user) {
         this.playerName = user.displayName || user.email || 'Anonymous User';
       }
-    } catch (error) {
-      console.error('Error getting current user:', error);
-      this.playerName = 'Anonymous User';
-    }
+
+    });
   }
 
   async joinGame() {
@@ -61,5 +61,12 @@ export class PlayerLobbyComponent implements OnInit {
   logout() {
     this.accountService.logout();
     this.router.navigate(['/']); // Navigate to the home page or another desired route
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+
   }
 }
