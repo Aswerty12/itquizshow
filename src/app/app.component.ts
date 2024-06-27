@@ -18,7 +18,7 @@ import { CommonModule } from '@angular/common';
         </header>
       </a>
       <a routerLink="/lobby"> Play!</a>
-      <a routerLink="/host">  HOST!</a>
+      <a routerLink="/host-login">  HOST!</a>
       <a routerLink="/about"> About</a>
       </nav>
 
