@@ -48,3 +48,6 @@ Thumbs.db
 
 src/environment.ts
 public/exampleworkbook.xlsx
+src/environments/enviroment.production.ts
+src/environments/environment.development.ts
+src/environments/environment.ts
