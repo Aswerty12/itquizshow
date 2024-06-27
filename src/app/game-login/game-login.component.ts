@@ -2,11 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 //THIS IS CONFUSING BUT THIS IS MEANT AS THE Game's host LOBBY
 @Component({
   selector: 'app-game-login',
   templateUrl: './game-login.component.html',
-  styleUrls: ['./game-login.component.scss']
+  styleUrls: ['./game-login.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class GameLoginComponent implements OnInit, OnDestroy {
 

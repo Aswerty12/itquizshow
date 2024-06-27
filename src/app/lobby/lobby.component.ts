@@ -3,11 +3,14 @@ import { Component } from '@angular/core';
 import { AccountService } from '../account.service';
 import { Router } from '@angular/router'; // Import Router for navigation
 import { Subscription } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-lobby',
   templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.scss']
+  styleUrls: ['./lobby.component.scss'],
+  standalone: true,
+  imports: [CommonModule]
 })
 export class LobbyComponent {
 
