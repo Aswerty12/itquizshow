@@ -1,24 +1,42 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-
-//import { routes } from './app.routes';
 import routeConfig from './routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+import { connectAuthEmulator } from '@angular/fire/auth';
+import { provideDatabase , getDatabase} from '@angular/fire/database';
+import { connectDatabaseEmulator } from '@angular/fire/database';
+import { connectFirestoreEmulator } from '@firebase/firestore';
 
-provideFirebaseApp(( )=> initializeApp(environment.firebaseConfig))
-provideAuth (() =>{
-  const auth = getAuth();
-  return auth;
-})
-provideFirestore (()=>{
-  const firestore = getFirestore();
-  return firestore
-}
-)
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routeConfig), provideClientHydration(), provideFirebaseApp(() => initializeApp({"projectId":"itquizshow","appId":"1:212745597603:web:b6412ededcad180ba50516","databaseURL":"https://itquizshow-default-rtdb.asia-southeast1.firebasedatabase.app","storageBucket":"itquizshow.appspot.com","apiKey":"AIzaSyCvoCs_-AijJ-avEST5bVakAYmoghduYdM","authDomain":"itquizshow.firebaseapp.com","messagingSenderId":"212745597603","measurementId":"G-HG7VM00FE4"})), provideAuth(() => getAuth()), provideFirestore(() => getFirestore())]
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routeConfig),
+    provideClientHydration(),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.useEmulators) {
+        connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      }
+      return auth;
+    }),
+    provideFirestore(() => {
+      const firestore = getFirestore();
+      if (environment.useEmulators) {
+        connectFirestoreEmulator(firestore, 'localhost', 8080);
+      }
+      return firestore;
+    }),
+    provideDatabase(() => {
+      const database = getDatabase();
+      if (environment.useEmulators) {
+        connectDatabaseEmulator(database, 'localhost', 9000);
+      }
+      return database;
+    })
+  ]
 };

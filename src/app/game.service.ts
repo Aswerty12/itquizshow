@@ -47,7 +47,7 @@ export class GameService {
 
   constructor(
     private firestore: Firestore,
-    private customQuestionService: CustomQuestionService
+
   ) {}
 
   get currentGameId(): string {

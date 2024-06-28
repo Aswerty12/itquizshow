@@ -14,7 +14,7 @@ import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angula
 import { GameLobbyGuard } from './guards/game-lobby.guard'; //Guard for player side
 import { HostLobbyGuard } from './guards/host-lobby.guard'; // Guard for host side
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['host-login']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['lobby']);
 const redirectLoggedInToPlayerLobby = () => redirectLoggedInTo(['player-lobby']);
 const redirectLoggedInToGameLobby = () => redirectLoggedInTo(['game-lobby']);
 
