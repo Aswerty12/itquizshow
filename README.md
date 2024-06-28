@@ -2,6 +2,9 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.2.
 
+## Environments
+
+You're going to have to create your own environment files within the environment folder. Create a firebase application and get the firebaseConfig variable from your firebase project settings, as well as setting up the emulators within the development environment.
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
