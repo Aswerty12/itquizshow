@@ -5,7 +5,7 @@ import { AccountService } from '../account.service';
 import { Subscription } from 'rxjs';
 import { GameData, Player } from '../game.service';
 import { LobbyService } from '../lobby.service'; // Import LobbyService
-import { Question } from '../customquestion.service';
+import { Question } from '../question';
 import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from '@angular/fire/auth';

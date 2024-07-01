@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameService } from '../game.service';
 import { Subscription } from 'rxjs';
 import { Player } from '../game.service';
-import { Question, CustomQuestionService } from '../customquestion.service';
+import { CustomQuestionService } from '../customquestion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { Question } from '../question';
 @Component({
   selector: 'app-game-host',
   templateUrl: './gamehost.component.html',

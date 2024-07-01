@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
 import { getFirestore, Firestore, collection, addDoc, getDocs, getDoc, doc, DocumentData } from 'firebase/firestore';
 import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
+import { Question } from './question';
 
 
 
 
-export interface Question {
-  question: string;
-  answer: string;
-  level: 'EASY' | 'AVERAGE' | 'DIFFICULT' | 'CLINCHER';
-  category: string;
-}
+
 
 @Injectable({
   providedIn: 'root'

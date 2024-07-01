@@ -4,12 +4,14 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { CustomQuestionService, Question } from '../customquestion.service';
+import { CustomQuestionService } from '../customquestion.service';
 import { GameService } from '../game.service';
 import { AccountService } from '../account.service';
 import { LobbyService } from '../lobby.service';
 
-import { GameData, Player } from '../game.service';
+import { GameData} from '../game.service';
+
+import { Question } from '../question';
 
 @Component({
   selector: 'app-game-setup',

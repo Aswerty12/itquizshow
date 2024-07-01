@@ -3,7 +3,7 @@ import { GameService } from '../game.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Player } from '../game.service';
-import { Question } from '../customquestion.service';
+import { Question } from '../question';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
