@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameService } from '../game.service';
-import { CustomQuestionService } from '../customquestion.service';
 import { Subscription } from 'rxjs';
 import { Player } from '../game.service';
-import { Question } from '../customquestion.service';
+import { Question, CustomQuestionService } from '../customquestion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -12,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './gamehost.component.html',
   styleUrls: ['./gamehost.component.scss'],
   standalone: true,
-  imports: [CommonModule,FormsModule]
+  imports: [CommonModule, FormsModule]
 })
 export class GameHostComponent implements OnInit, OnDestroy {
   currentQuestion: Question | null = null;
@@ -23,18 +22,17 @@ export class GameHostComponent implements OnInit, OnDestroy {
   players: Player[] = [];
   gameCode: string = '';
 
-  selectedFile: File | null = null;
-  uploadedQuestionSets: string[] = [];
   selectedQuestionSetId: string = '';
+  questionSets: string[] = [];
 
   private gameStateSubscription: Subscription | null = null;
   private questionSubscription: Subscription | null = null;
   private playersSubscription: Subscription | null = null;
-  private timerSubscription: Subscription | null = null
+  private timerSubscription: Subscription | null = null;
 
   constructor(
     private gameService: GameService,
-    private customQuestionService: CustomQuestionService
+    private customQuestionService : CustomQuestionService
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +55,6 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.timerSubscription = this.gameService.timer$.subscribe(timerValue => {
       this.timer = timerValue;
     });
-
     this.loadQuestionSets();
   }
 
@@ -67,32 +64,6 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.playersSubscription?.unsubscribe();
     this.timerSubscription?.unsubscribe();
     this.gameService.stopGame();
-  }
-
-  async loadQuestionSets() {
-    try {
-      this.uploadedQuestionSets = await this.customQuestionService.getQuestionSetIds();
-    } catch (error) {
-      console.error('Error loading question sets:', error);
-    }
-  }
-
-  onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
-  }
-
-  async uploadQuestions() {
-    if (this.selectedFile) {
-      try {
-        await this.customQuestionService.uploadQuestions(this.selectedFile);
-        await this.loadQuestionSets();
-        console.log('Questions uploaded successfully');
-      } catch (error) {
-        console.error('Error uploading questions:', error);
-      }
-    } else {
-      console.error('No file selected');
-    }
   }
 
   async createGame() {
@@ -129,8 +100,14 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.gameService.endGame();
   }
 
-
   private updateLeaderboard() {
     this.leaderboard = [...this.players].sort((a, b) => b.score - a.score);
+  }
+  private async loadQuestionSets() {
+    try {
+      this.questionSets = await this.customQuestionService.getQuestionSetIds();
+    } catch (error) {
+      console.error('Error loading question sets:', error);
+    }
   }
 }

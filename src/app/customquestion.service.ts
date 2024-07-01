@@ -8,7 +8,7 @@ import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
 export interface Question {
   question: string;
   answer: string;
-  level: string; // "EASY", "AVERAGE", "DIFFICULT", "CLINCHER"
+  level: 'EASY' | 'AVERAGE' | 'DIFFICULT' | 'CLINCHER';
   category: string;
 }
 

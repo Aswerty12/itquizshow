@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDoc, setDoc, updateDoc, DocumentReference } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Question} from './customquestion.service';
 
@@ -44,6 +44,13 @@ export class GameService {
 
   private timerSubject = new BehaviorSubject<number>(this.timerValue);
   timer$ = this.timerSubject.asObservable();
+
+  private questionConfig = {
+    EASY: { time: 15, points: 100 },
+    AVERAGE: { time: 30, points: 200 },
+    DIFFICULT: { time: 45, points: 300 },
+    CLINCHER: { time: 60, points: 500 }
+  };
 
   constructor(
     private firestore: Firestore,
@@ -140,12 +147,13 @@ export class GameService {
   async submitAnswer(playerId: string, answer: string) {
     const currentQuestion = this.questions[this.currentQuestionIndex];
     const isCorrect = currentQuestion.answer === answer;
+    const pointsEarned = isCorrect ? this.calculatePoints(currentQuestion.level) : 0;
 
     this.players = this.players.map(p => {
       if (p.id === playerId) {
         return {
           ...p,
-          score: isCorrect ? p.score + 1 : p.score,
+          score: p.score + pointsEarned,
           lastanswertimestamp: new Date(),
           isCorrect: isCorrect
         };
@@ -155,6 +163,12 @@ export class GameService {
 
     this.playersSubject.next(this.players);
     await this.updateGameState();
+  }
+
+  private calculatePoints(level: Question['level']): number {
+    const basePoints = this.questionConfig[level].points;
+    const timeBonus = Math.floor((this.timerValue / this.questionConfig[level].time) * basePoints);
+    return basePoints + timeBonus;
   }
 
   async pauseGame() {
@@ -263,7 +277,8 @@ export class GameService {
 
   private startTimer() {
     this.stopTimer();
-    this.timerValue = 30;
+    const currentQuestion = this.questions[this.currentQuestionIndex];
+    this.timerValue = this.questionConfig[currentQuestion.level].time;
     this.timerSubject.next(this.timerValue);
 
     this.timerInterval = setInterval(() => {
@@ -275,7 +290,6 @@ export class GameService {
       }
     }, 1000);
   }
-
   private stopTimer() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
