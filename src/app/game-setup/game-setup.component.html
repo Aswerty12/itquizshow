@@ -1,0 +1,55 @@
+<div class="game-setup-container">
+    <h1 class="setup-title">Kahoot Clone Game Setup</h1>
+  
+    <!-- Question Set Upload Section -->
+    <section class="upload-section">
+      <h2>Upload Custom Question Set</h2>
+      <div>
+        <label for="file-upload">Upload File:</label>
+        <input type="file" id="file-upload" (change)="onFileSelected($event)" />
+      </div>
+      <button (click)="uploadQuestions()">Upload Questions</button>
+    </section>
+  
+    <!-- Question Set Selection Section -->
+    <section class="question-set-section">
+      <h2>Select Question Set</h2>
+      <label for="questionSetID">Select a Question Set</label>
+      <select title="Question Set Selector" [(ngModel)]="questionSetId">
+        <option value="">-- Select a Question Set --</option>
+        <option *ngFor="let setId of uploadedQuestionSets" [value]="setId">
+          {{ setId }}
+        </option>
+      </select>
+    </section>
+  
+    <!-- Game Creation Section -->
+    <section class="game-creation-section">
+      <h2>Create a Game</h2>
+      <button (click)="createGame()" [disabled]="!questionSetId">Create Game</button>
+    </section>
+  
+    <!-- Game Joining Section -->
+    <section class="game-joining-section">
+      <h2>Join a Game</h2>
+      <input type="text" placeholder="Game ID" [(ngModel)]="gameId">
+      <button (click)="getGameData(gameId)">Get Game Data</button>
+      <button (click)="joinGame()">Join Game</button>
+    </section>
+  
+    <!-- Players in Lobby Section -->
+    <section class="players-section" *ngIf="gameData && gameData.gameState === 'stopped'">
+      <h2>Players in the Lobby:</h2>
+      <ul>
+        <li *ngFor="let player of gameData.players">{{ player.name }}</li>
+      </ul>
+    </section>
+  
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoading" class="loading-spinner">Loading...</div>
+  
+    <!-- Logout Button -->
+    <div class="logout-section">
+      <button (click)="logout()" class="logout-button">Logout</button>
+    </div>
+  </div>
