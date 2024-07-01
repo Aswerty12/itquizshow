@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, getDoc, setDoc, updateDoc, DocumentReference } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Question, CustomQuestionService } from './customquestion.service';
+import { Question} from './customquestion.service';
 
 export interface Player {
   id: string;

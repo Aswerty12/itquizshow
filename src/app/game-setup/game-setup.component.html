@@ -1,49 +1,69 @@
 <div class="game-setup-container">
     <h1 class="setup-title">Kahoot Clone Game Setup</h1>
   
+    <!-- Error and Success Messages -->
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+  
     <!-- Question Set Upload Section -->
     <section class="upload-section">
       <h2>Upload Custom Question Set</h2>
-      <div>
-        <label for="file-upload">Upload File:</label>
-        <input type="file" id="file-upload" (change)="onFileSelected($event)" />
-      </div>
-      <button (click)="uploadQuestions()">Upload Questions</button>
+      <form [formGroup]="uploadForm" (ngSubmit)="uploadQuestions()">
+        <div>
+          <label for="file-upload">Upload File:</label>
+          <input type="file" id="file-upload" (change)="onFileSelected($event)" formControlName="file" required>
+          <div *ngIf="uploadForm.get('file')?.invalid && uploadForm.get('file')?.touched" class="error-message">
+            Please select a file.
+          </div>
+        </div>
+        <div>
+          <label for="question-set-name">Question Set Name:</label>
+          <input type="text" id="question-set-name" formControlName="questionSetName" required>
+          <div *ngIf="uploadForm.get('questionSetName')?.invalid && uploadForm.get('questionSetName')?.touched" class="error-message">
+            Please enter a name (minimum 3 characters).
+          </div>
+        </div>
+        <button type="submit" [disabled]="uploadForm.invalid || isLoading">Upload Questions</button>
+      </form>
     </section>
   
     <!-- Question Set Selection Section -->
     <section class="question-set-section">
       <h2>Select Question Set</h2>
-      <label for="questionSetID">Select a Question Set</label>
-      <select title="Question Set Selector" [(ngModel)]="questionSetId">
-        <option value="">-- Select a Question Set --</option>
-        <option *ngFor="let setId of uploadedQuestionSets" [value]="setId">
-          {{ setId }}
-        </option>
-      </select>
-    </section>
-  
-    <!-- Game Creation Section -->
-    <section class="game-creation-section">
-      <h2>Create a Game</h2>
-      <button (click)="createGame()" [disabled]="!questionSetId">Create Game</button>
+      <div *ngFor="let setId of uploadedQuestionSets" class="question-set-item">
+        <span>{{ setId }}</span>
+        <button (click)="createGame(setId)" [disabled]="isLoading">Create Game</button>
+        <button (click)="previewQuestionSet(setId)" [disabled]="isLoading">Preview</button>
+      </div>
     </section>
   
     <!-- Game Joining Section -->
     <section class="game-joining-section">
       <h2>Join a Game</h2>
-      <input type="text" placeholder="Game ID" [(ngModel)]="gameId">
-      <button (click)="getGameData(gameId)">Get Game Data</button>
-      <button (click)="joinGame()">Join Game</button>
+      <form [formGroup]="joinForm" (ngSubmit)="joinGame()">
+        <input type="text" placeholder="Game ID" formControlName="gameId">
+        <div *ngIf="joinForm.get('gameId')?.invalid && joinForm.get('gameId')?.touched" class="error-message">
+          Please enter a valid Game ID (minimum 6 characters).
+        </div>
+        <button type="submit" [disabled]="joinForm.invalid || isLoading">Join Game</button>
+      </form>
     </section>
   
-    <!-- Players in Lobby Section -->
-    <section class="players-section" *ngIf="gameData && gameData.gameState === 'stopped'">
-      <h2>Players in the Lobby:</h2>
-      <ul>
-        <li *ngFor="let player of gameData.players">{{ player.name }}</li>
-      </ul>
-    </section>
+    <!-- Question Set Preview Modal -->
+    <div *ngIf="previewQuestions" class="preview-modal">
+      <div class="preview-content">
+        <h2>Question Set Preview</h2>
+        <ul>
+          <li *ngFor="let question of previewQuestions">
+            <strong>Q: {{ question.question }}</strong>
+            <p>A: {{ question.answer }}</p>
+            <p>Level: {{ question.level }}</p>
+            <p>Category: {{ question.category }}</p>
+          </li>
+        </ul>
+        <button (click)="closePreview()">Close Preview</button>
+      </div>
+    </div>
   
     <!-- Loading Indicator -->
     <div *ngIf="isLoading" class="loading-spinner">Loading...</div>

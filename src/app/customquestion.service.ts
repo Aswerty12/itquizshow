@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { getFirestore, Firestore, collection, addDoc, getDocs, getDoc, doc, DocumentData } from 'firebase/firestore';
 import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
-import { environment } from '../environment';
+
 
 
 
@@ -22,16 +22,17 @@ export class CustomQuestionService {
   /**
    * Uploads a CSV file containing custom questions.
    * @param file - The CSV file to upload.
+   * @param questionSetName - Name of question set to upload as string
    * @returns A promise that resolves when the upload is complete.
    */
-  uploadQuestions(file: File): Promise<void> {
+  uploadQuestions(file: File, questionSetName: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = async (event: ProgressEvent<FileReader>) => { // Typed event
+      reader.onload = async (event: ProgressEvent<FileReader>) => {
         try {
           if (event.target && typeof event.target.result === 'string') {
             const questions = await this.parseCSV(event.target.result);
-            await this.storeQuestions(questions);
+            await this.storeQuestions(questions, questionSetName);
             resolve();
           } else {
             reject(new Error('Invalid file content'));
@@ -71,11 +72,13 @@ export class CustomQuestionService {
   /**
    * Stores the parsed question data in Firebase Firestore.
    * @param questions - The array of Question objects to store.
+   * @param questionSetName - Name of question set
    * @returns A promise that resolves when the storage is complete.
    */
-  private async storeQuestions(questions: Question[]): Promise<void> {
-    const data: { questions: Question[]; [key: string]: any } = {
+  private async storeQuestions(questions: Question[], questionSetName: string): Promise<void> {
+    const data: { questions: Question[]; name: string; [key: string]: any } = {
       questions,
+      name: questionSetName,
       // ... other metadata (optional)
     };
   
@@ -83,7 +86,7 @@ export class CustomQuestionService {
     const questionSetRef = await addDoc(questionSetsCollection, data);
     const questionSetId = questionSetRef.id;
     
-    console.log(`Question set saved with ID: ${questionSetId}`); // Optional logging
+    console.log(`Question set "${questionSetName}" saved with ID: ${questionSetId}`);
   }
 
   /**
