@@ -25,14 +25,14 @@ export class CustomQuestionService {
    * @param questionSetName - Name of question set to upload as string
    * @returns A promise that resolves when the upload is complete.
    */
-  uploadQuestions(file: File, questionSetName: string): Promise<void> {
+  uploadQuestions(file: File, questionSetName?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = async (event: ProgressEvent<FileReader>) => {
         try {
           if (event.target && typeof event.target.result === 'string') {
             const questions = await this.parseCSV(event.target.result);
-            await this.storeQuestions(questions, questionSetName);
+            await this.storeQuestions(questions, questionSetName || 'Untitled Question Set');
             resolve();
           } else {
             reject(new Error('Invalid file content'));
@@ -45,7 +45,7 @@ export class CustomQuestionService {
       reader.readAsText(file);
     });
   }
-
+  
   /**
    * Parses the CSV data into an array of Question objects.
    * @param csvData - The CSV data as a string.

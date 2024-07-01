@@ -1,5 +1,4 @@
 import { RouterModule, Routes } from '@angular/router';
-import { NgModule } from '@angular/core';
 import { HomeComponent } from './home/home.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
 import { AboutComponent } from './about/about.component';
@@ -7,12 +6,14 @@ import { LobbyComponent } from './lobby/lobby.component'; //player login
 import { PlayerLobbyComponent } from './player-lobby/player-lobby.component'; //player lobby
 import { GamePlayerComponent } from './game-player/game-player.component'; //player game
 import { GameLoginComponent  } from './game-login/game-login.component'; //login
-import { GameLobbyComponent } from './game-lobby/game-lobby.component'; //lobby
+
+import { GameSetupComponent } from './game-setup/game-setup.component'; // New Lobby Component with question upload
 import { GameHostComponent } from './gamehost/gamehost.component';// game for host
 
 import { canActivate, redirectUnauthorizedTo, redirectLoggedInTo } from '@angular/fire/auth-guard';
 import { GameLobbyGuard } from './guards/game-lobby.guard'; //Guard for player side
 import { HostLobbyGuard } from './guards/host-lobby.guard'; // Guard for host side
+
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['lobby']);
 const redirectLoggedInToPlayerLobby = () => redirectLoggedInTo(['player-lobby']);
@@ -50,7 +51,7 @@ const routeConfig: Routes = [
     },
     {
         path: 'game-lobby',
-        component: GameLobbyComponent,
+        component: GameSetupComponent,
         title: "Create A Game",
         ...canActivate(redirectUnauthorizedToLogin)
     },

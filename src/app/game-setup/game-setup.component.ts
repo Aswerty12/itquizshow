@@ -83,6 +83,9 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     if (this.uploadForm.valid && this.selectedFile) {
       try {
         const questionSetName = this.uploadForm.get('questionSetName')?.value;
+        if (!questionSetName) {
+          throw new Error('Question set name is required');
+        }
         await this.customQuestionService.uploadQuestions(this.selectedFile, questionSetName);
         await this.loadQuestionSets();
         this.successMessage = `Question set "${questionSetName}" uploaded successfully!`;
