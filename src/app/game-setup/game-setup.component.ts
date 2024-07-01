@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild,ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -10,8 +10,7 @@ import { GameService } from '../game.service';
 import { AccountService } from '../account.service';
 
 
-import { GameData} from '../game.service';
-
+import { GameData} from '../game.service';  
 import { Question } from '../question';
 
 @Component({
@@ -22,6 +21,8 @@ import { Question } from '../question';
   styleUrls: ['./game-setup.component.scss']
 })
 export class GameSetupComponent implements OnInit, OnDestroy {
+  @ViewChild('fileInput') fileInput!: ElementRef;
+
   uploadForm: FormGroup;
   joinForm: FormGroup;
   selectedFile: File | null = null;
@@ -31,10 +32,11 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   errorMessage = '';
   successMessage = '';
   previewQuestions: Question[] | null = null;
+  questionSets: string[] = []; //Remove if reduntant with uploaded
 
-  private userSubscription!: Subscription;
-  private gameDataSubscription!: Subscription;
-  private questionSubscription!: Subscription;
+  private userSubscription: Subscription | undefined;
+  private gameDataSubscription: Subscription | undefined;
+  private questionSubscription: Subscription = new Subscription();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -96,8 +98,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
         await this.customQuestionService.uploadQuestions(this.selectedFile, questionSetName);
         await this.loadQuestionSets();
         this.successMessage = `Question set "${questionSetName}" uploaded successfully!`;
-        this.uploadForm.reset();
-        this.selectedFile = null;
+        this.resetForm();
       } catch (error) {
         this.errorMessage = 'Error uploading questions. Please try again.';
         console.error('Error uploading questions:', error);
@@ -111,7 +112,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   loadQuestionSets() {
     this.isLoading = true;
     this.errorMessage = '';
-    const Subscription = this.customQuestionService.getQuestionSetIds()
+    const subscription = this.customQuestionService.getQuestionSetIds()
       .pipe(
         finalize(() => this.isLoading = false)
       )
@@ -124,8 +125,8 @@ export class GameSetupComponent implements OnInit, OnDestroy {
           console.error('Error loading question sets:', error);
         }
       });
-      this.questionSubscription.add(Subscription)
-    }
+    this.questionSubscription.add(subscription);
+  }
 
   async createGame(questionSetId: string) {
     this.isLoading = true;
@@ -195,5 +196,12 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   logout() {
     this.accountService.logout();
     this.router.navigate(['/']);
+  }
+  resetForm() {
+    this.uploadForm.reset();
+    this.selectedFile = null;
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
 }
