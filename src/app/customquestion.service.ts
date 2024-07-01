@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { getFirestore, Firestore, collection, addDoc, getDocs, getDoc, doc, DocumentData } from 'firebase/firestore';
+import { Injectable, inject } from '@angular/core';
+import { Firestore, collection, addDoc, getDocs, getDoc, doc } from 'firebase/firestore';
 import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
 import { Question } from './question';
 
@@ -13,7 +13,8 @@ import { Question } from './question';
 })
 export class CustomQuestionService {
   //Should this be  firestore = inject(Firestore) ???
-  constructor(private firestore: Firestore) {}
+  constructor() {}
+  private firestore: Firestore = inject(Firestore)
   
   /**
    * Uploads a CSV file containing custom questions.

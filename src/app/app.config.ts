@@ -1,19 +1,18 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import routeConfig from './routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { environment } from '../environments/environment';
 import { connectAuthEmulator } from '@angular/fire/auth';
-import { provideDatabase , getDatabase} from '@angular/fire/database';
 import { connectDatabaseEmulator } from '@angular/fire/database';
 import { connectFirestoreEmulator } from '@firebase/firestore';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routeConfig),
     provideClientHydration(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),

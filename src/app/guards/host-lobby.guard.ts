@@ -28,12 +28,12 @@ export class HostLobbyGuard implements CanActivate {
 
     const gameId = route.paramMap.get('gameId');
     if (!gameId) {
-      return this.router.parseUrl('/game-lobby');
+      return this.router.parseUrl('/game-setup');
     }
 
     const isValidGame = await this.gameService.isValidGame(gameId);
     if (!isValidGame) {
-      return this.router.parseUrl('/game-lobby');
+      return this.router.parseUrl('/game-setup');
     }
 
     return true;

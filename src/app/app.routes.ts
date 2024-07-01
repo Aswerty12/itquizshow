@@ -17,7 +17,7 @@ import { HostLobbyGuard } from './guards/host-lobby.guard'; // Guard for host si
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['lobby']);
 const redirectLoggedInToPlayerLobby = () => redirectLoggedInTo(['player-lobby']);
-const redirectLoggedInToGameLobby = () => redirectLoggedInTo(['game-lobby']);
+const redirectLoggedInToGameLobby = () => redirectLoggedInTo(['game-setup']);
 
 const routeConfig: Routes = [
     {
@@ -50,7 +50,7 @@ const routeConfig: Routes = [
         ...canActivate(redirectLoggedInToGameLobby)
     },
     {
-        path: 'game-lobby',
+        path: 'game-setup',
         component: GameSetupComponent,
         title: "Create A Game",
         ...canActivate(redirectUnauthorizedToLogin)

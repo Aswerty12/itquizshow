@@ -28,7 +28,7 @@ export class GameLoginComponent implements OnInit, OnDestroy {
       this.isLoggedIn = loggedIn;
       if (loggedIn) {
         // Optionally, redirect to host (game) if user is already logged in
-        this.router.navigate(['/game-lobby']); // or wherever you want to redirect
+        this.router.navigate(['/game-setup']); // or wherever you want to redirect
       }
     });
   }
@@ -40,7 +40,7 @@ export class GameLoginComponent implements OnInit, OnDestroy {
       this.isLoggedIn = true;
       this.isLoading = false;
       // Redirect to the player lobby after successful login
-      this.router.navigate(['/game-lobby']); 
+      this.router.navigate(['/game-setup']); 
     } catch (error) {
       this.isLoading = false;
       console.error('Error during Google login:', error);
@@ -55,7 +55,7 @@ export class GameLoginComponent implements OnInit, OnDestroy {
       this.isLoggedIn = true;
       this.isLoading = false;
       // Redirect to the player lobby after successful login
-      this.router.navigate(['/game-lobby']);
+      this.router.navigate(['/game-setup']);
     } catch (error) {
       this.isLoading = false;
       console.error('Error during anonymous login:', error);
