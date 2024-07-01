@@ -1,114 +1,80 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, getDocs, getDoc, doc } from 'firebase/firestore';
-import * as Papa from 'papaparse'; // Import Papa Parse for CSV handling
+import { Firestore, collection, addDoc, getDocs, getDoc, doc } from '@angular/fire/firestore';
+import { from, Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import * as Papa from 'papaparse';
 import { Question } from './question';
-
-
-
-
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomQuestionService {
-  //Should this be  firestore = inject(Firestore) ???
-  constructor() {}
-  private firestore: Firestore = inject(Firestore)
-  
-  /**
-   * Uploads a CSV file containing custom questions.
-   * @param file - The CSV file to upload.
-   * @param questionSetName - Name of question set to upload as string
-   * @returns A promise that resolves when the upload is complete.
-   */
-  uploadQuestions(file: File, questionSetName?: string): Promise<void> {
-    return new Promise((resolve, reject) => {
+  private firestore = inject(Firestore);
+
+  uploadQuestions(file: File, questionSetName = 'Untitled Question Set'): Observable<void> {
+    return new Observable(observer => {
       const reader = new FileReader();
       reader.onload = async (event: ProgressEvent<FileReader>) => {
         try {
           if (event.target && typeof event.target.result === 'string') {
             const questions = await this.parseCSV(event.target.result);
-            await this.storeQuestions(questions, questionSetName || 'Untitled Question Set');
-            resolve();
+            await this.storeQuestions(questions, questionSetName);
+            observer.next();
+            observer.complete();
           } else {
-            reject(new Error('Invalid file content'));
+            observer.error(new Error('Invalid file content'));
           }
         } catch (error) {
-          reject(error);
+          observer.error(error);
         }
       };
-      reader.onerror = (error) => reject(error);
+      reader.onerror = error => observer.error(error);
       reader.readAsText(file);
     });
   }
-  
-  /**
-   * Parses the CSV data into an array of Question objects.
-   * @param csvData - The CSV data as a string.
-   * @returns A promise that resolves with an array of Question objects.
-   */
+
   private parseCSV(csvData: string): Promise<Question[]> {
     return new Promise((resolve, reject) => {
       Papa.parse(csvData, {
-        header: true, // Assuming your CSV has headers
+        header: true,
         complete: (results: Papa.ParseResult<Question>) => {
           if (results.errors.length > 0) {
-            // Handle errors from parsing (optional logging or custom error handling)
             console.error('Parsing errors:', results.errors);
-            reject(new Error('Error parsing CSV data')); // Or a more specific error message
+            reject(new Error('Error parsing CSV data'));
           } else {
-            const questions: Question[] = results.data;
-            resolve(questions);
+            resolve(results.data);
           }
         },
       });
     });
   }
 
-  /**
-   * Stores the parsed question data in Firebase Firestore.
-   * @param questions - The array of Question objects to store.
-   * @param questionSetName - Name of question set
-   * @returns A promise that resolves when the storage is complete.
-   */
   private async storeQuestions(questions: Question[], questionSetName: string): Promise<void> {
-    const data: { questions: Question[]; name: string; [key: string]: any } = {
-      questions,
-      name: questionSetName,
-      // ... other metadata (optional)
-    };
-  
+    const data = { questions, name: questionSetName };
     const questionSetsCollection = collection(this.firestore, 'questionSets');
     const questionSetRef = await addDoc(questionSetsCollection, data);
-    const questionSetId = questionSetRef.id;
-    
-    console.log(`Question set "${questionSetName}" saved with ID: ${questionSetId}`);
+    console.log(`Question set "${questionSetName}" saved with ID: ${questionSetRef.id}`);
   }
 
-  /**
-   * Loads questions for a given question set ID.
-   * @param questionSetId - The ID of the question set to load.
-   * @returns A promise that resolves with an array of Question objects.
-   */
-  async loadQuestions(questionSetId: string): Promise<Question[]> {
+  loadQuestions(questionSetId: string): Observable<Question[]> {
     const docRef = doc(this.firestore, 'questionSets', questionSetId);
-    const docSnapshot = await getDoc(docRef);
-    
-    if (docSnapshot.exists()) {
-      return docSnapshot.data()?.['questions'] as Question[];
-    } else {
-      throw new Error(`Question set with ID ${questionSetId} not found`);
-    }
+    return from(getDoc(docRef)).pipe(
+      map(docSnapshot => {
+        if (docSnapshot.exists()) {
+          return docSnapshot.data()?.['questions'] as Question[];
+        } else {
+          throw new Error(`Question set with ID ${questionSetId} not found`);
+        }
+      }),
+      catchError(error => throwError(() => error))
+    );
   }
 
-  /**
-   * Retrieves a list of all question set IDs.
-   * @returns A promise that resolves with an array of question set IDs.
-   */
-  async getQuestionSetIds(): Promise<string[]> {
+  getQuestionSetIds(): Observable<string[]> {
     const questionSetsCollection = collection(this.firestore, 'questionSets');
-    const snapshot = await getDocs(questionSetsCollection);
-    return snapshot.docs.map(doc => doc.id);
+    return from(getDocs(questionSetsCollection)).pipe(
+      map(snapshot => snapshot.docs.map(doc => doc.id)),
+      catchError(error => throwError(() => error))
+    );
   }
 }

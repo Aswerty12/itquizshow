@@ -29,6 +29,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   private questionSubscription: Subscription | null = null;
   private playersSubscription: Subscription | null = null;
   private timerSubscription: Subscription | null = null;
+  private questionSetsSubscription: Subscription | null = null;
 
   constructor(
     private gameService: GameService,
@@ -63,6 +64,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.questionSubscription?.unsubscribe();
     this.playersSubscription?.unsubscribe();
     this.timerSubscription?.unsubscribe();
+    this.questionSetsSubscription?.unsubscribe();
     this.gameService.stopGame();
   }
 
@@ -103,11 +105,17 @@ export class GameHostComponent implements OnInit, OnDestroy {
   private updateLeaderboard() {
     this.leaderboard = [...this.players].sort((a, b) => b.score - a.score);
   }
-  private async loadQuestionSets() {
-    try {
-      this.questionSets = await this.customQuestionService.getQuestionSetIds();
-    } catch (error) {
-      console.error('Error loading question sets:', error);
-    }
+  private loadQuestionSets() {
+    this.questionSetsSubscription = this.customQuestionService.getQuestionSetIds()
+      .subscribe({
+        next: (questionSets) => {
+          this.questionSets = questionSets;
+        },
+        error: (error) => {
+          console.error('Error loading question sets:', error);
+          // Optionally, you can set an error message to display in the template
+          // this.errorMessage = 'Failed to load question sets. Please try again.';
+        }
+      });
   }
 }

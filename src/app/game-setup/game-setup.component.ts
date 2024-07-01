@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import { CustomQuestionService } from '../customquestion.service';
 import { GameService } from '../game.service';
 import { AccountService } from '../account.service';
-import { LobbyService } from '../lobby.service';
+
 
 import { GameData} from '../game.service';
 
@@ -33,6 +34,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
 
   private userSubscription!: Subscription;
   private gameDataSubscription!: Subscription;
+  private questionSubscription!: Subscription;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,7 +42,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     private gameService: GameService,
     private router: Router,
     private accountService: AccountService,
-    private lobbyService: LobbyService
+    
   ) {
     this.uploadForm = this.formBuilder.group({
       file: ['', Validators.required],
@@ -67,6 +69,9 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     }
     if (this.gameDataSubscription) {
       this.gameDataSubscription.unsubscribe();
+    }
+    if (this.questionSubscription){
+      this.questionSubscription.unsubscribe();
     }
   }
 
@@ -103,14 +108,24 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-  async loadQuestionSets() {
-    try {
-      this.uploadedQuestionSets = await this.customQuestionService.getQuestionSetIds();
-    } catch (error) {
-      this.errorMessage = 'Error loading question sets. Please try again.';
-      console.error('Error loading question sets:', error);
+  loadQuestionSets() {
+    this.isLoading = true;
+    this.errorMessage = '';
+    const Subscription = this.customQuestionService.getQuestionSetIds()
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: (questionSetIds) => {
+          this.uploadedQuestionSets = questionSetIds;
+        },
+        error: (error) => {
+          this.errorMessage = 'Error loading question sets. Please try again.';
+          console.error('Error loading question sets:', error);
+        }
+      });
+      this.questionSubscription.add(Subscription)
     }
-  }
 
   async createGame(questionSetId: string) {
     this.isLoading = true;
@@ -150,17 +165,28 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-  async previewQuestionSet(questionSetId: string) {
+  previewQuestionSet(questionSetId: string) {
     this.isLoading = true;
     this.errorMessage = '';
-    try {
-      this.previewQuestions = await this.customQuestionService.loadQuestions(questionSetId);
-    } catch (error) {
-      this.errorMessage = 'Error loading question set preview. Please try again.';
-      console.error('Error loading question set preview:', error);
-    }
-    this.isLoading = false;
+    this.previewQuestions = null;
+
+    const subscription = this.customQuestionService.loadQuestions(questionSetId)
+      .pipe(
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: (questions) => {
+          this.previewQuestions = questions;
+        },
+        error: (error) => {
+          this.errorMessage = 'Error loading question set preview. Please try again.';
+          console.error('Error loading question set preview:', error);
+        }
+      });
+
+    this.questionSubscription.add(subscription);
   }
+
 
   closePreview() {
     this.previewQuestions = null;
