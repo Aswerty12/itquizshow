@@ -2,7 +2,7 @@
   <h2>Select Question Set</h2>
   <select title="Select Question Set" [(ngModel)]="selectedQuestionSetId">
     <option value="">Select a question set</option>
-    <option *ngFor="let setId of questionSets" [value]="setId">{{ setId }}</option>
+    <option *ngFor="let set of questionSets" [value]="set.id">{{ set.name }}</option>
   </select>
 
   <button (click)="createGame()">Create Game</button>

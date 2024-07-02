@@ -16,6 +16,8 @@ Currently this project features two sides and a login screen:
 
 When uploading question sets, ensure that they follow the format of Question, Answer, Level (EASY, AVERAGE, DIFFICULT, CLINCHER), and CATEGORY to prevent any problems. If you have an excel spreadsheet, then extract the needed collumns with headers into a separate spreadsheet and save it as a `.csv` file. 
 
+** Ensure that your csv has no extra blank lines. **
+
 ## Firebase Environment
 
 You're going to have to create your own environment files within the environment folder. [Create a firebase application ](https://firebase.google.com/docs/web/setup?continue=https%3A%2F%2Ffirebase.google.com%2Flearn%2Fpathways%2Ffirebase-web%23article-https%3A%2F%2Ffirebase.google.com%2Fdocs%2Fweb%2Fsetup) and get the firebaseConfig variable from your firebase project settings, as well as setting up the emulators within the development environment. 

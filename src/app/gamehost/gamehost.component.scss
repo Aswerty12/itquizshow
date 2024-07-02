@@ -1,0 +1,92 @@
+// Variables for colors and spacing
+$primary-color: #3498db;  // Blue
+$secondary-color: #95a5a6;  // Grey
+$background-color: #ecf0f1;  // Light grey
+$font-color: #2c3e50;  // Dark grey
+$button-color: #2980b9;  // Darker blue
+$border-radius: 5px;
+$padding: 10px;
+$margin: 15px;
+
+body {
+  background-color: $background-color;
+  font-family: Arial, sans-serif;
+  color: $font-color;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  padding: $padding;
+  margin: auto;
+  max-width: 600px;
+}
+
+h2, h3 {
+  color: $primary-color;
+}
+
+button {
+  background-color: $button-color;
+  color: #fff;
+  border: none;
+  border-radius: $border-radius;
+  padding: $padding;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: darken($button-color, 10%);
+  }
+}
+
+select {
+  padding: $padding;
+  border-radius: $border-radius;
+  border: 1px solid $primary-color;
+  margin: $margin 0;
+  width: 100%;
+}
+
+ul, ol {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: $padding;
+  margin: $margin 0;
+  border: 1px solid $secondary-color;
+  border-radius: $border-radius;
+}
+
+.div-stopped,
+.div-waiting,
+.div-started,
+.div-paused,
+.div-ended {
+  padding: $padding;
+  margin: $margin 0;
+  background-color: #fff;
+  border-radius: $border-radius;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.div-waiting ul,
+.div-started ul,
+.div-ended ol {
+  background-color: $background-color;
+  padding: $padding;
+  border-radius: $border-radius;
+}
+
+.div-started .timer {
+  font-weight: bold;
+  color: $button-color;
+}
+
+.div-ended .final-leaderboard {
+  font-weight: bold;
+  color: $secondary-color;
+}

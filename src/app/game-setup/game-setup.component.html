@@ -30,10 +30,11 @@
     <!-- Question Set Selection Section -->
     <section class="question-set-section">
       <h2>Select Question Set</h2>
-      <div *ngFor="let setId of uploadedQuestionSets" class="question-set-item">
-        <span>{{ setId }}</span>
-        <button (click)="createGame(setId)" [disabled]="isLoading">Create Game</button>
-        <button (click)="previewQuestionSet(setId)" [disabled]="isLoading">Preview</button>
+      <div *ngIf="questionSets.length === 0">No question sets available.</div>
+      <div *ngFor="let set of questionSets" class="question-set-item">
+        <span>{{ set.name }}</span>
+        <button (click)="createGame(set.id)" [disabled]="isLoading">Create Game</button>
+        <button (click)="previewQuestionSet(set.id)" [disabled]="isLoading">Preview</button>
       </div>
     </section>
   

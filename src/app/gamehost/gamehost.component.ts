@@ -6,6 +6,12 @@ import { CustomQuestionService } from '../customquestion.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Question } from '../question';
+
+interface QuestionSet {
+  id: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-game-host',
   templateUrl: './gamehost.component.html',
@@ -23,7 +29,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   gameCode: string = '';
 
   selectedQuestionSetId: string = '';
-  questionSets: string[] = [];
+  questionSets: QuestionSet[] = [];
 
   private gameStateSubscription: Subscription | null = null;
   private questionSubscription: Subscription | null = null;
@@ -106,7 +112,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.leaderboard = [...this.players].sort((a, b) => b.score - a.score);
   }
   private loadQuestionSets() {
-    this.questionSetsSubscription = this.customQuestionService.getQuestionSetIds()
+    this.questionSetsSubscription = this.customQuestionService.getQuestionSets()
       .subscribe({
         next: (questionSets) => {
           this.questionSets = questionSets;

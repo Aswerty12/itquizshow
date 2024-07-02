@@ -13,6 +13,12 @@ import { AccountService } from '../account.service';
 import { GameData} from '../game.service';  
 import { Question } from '../question';
 
+
+interface QuestionSet {
+  id: string;
+  name: string;
+}
+
 @Component({
   selector: 'app-game-setup',
   standalone: true,
@@ -32,7 +38,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   errorMessage = '';
   successMessage = '';
   previewQuestions: Question[] | null = null;
-  questionSets: string[] = []; //Remove if reduntant with uploaded
+  questionSets: QuestionSet[]=[]; //Remove if reduntant with uploaded
 
   private userSubscription: Subscription | undefined;
   private gameDataSubscription: Subscription | undefined;
@@ -96,10 +102,10 @@ export class GameSetupComponent implements OnInit, OnDestroy {
         if (!questionSetName) {
           throw new Error('Question set name is required');
         }
-        await this.customQuestionService.uploadQuestions(this.selectedFile, questionSetName);
-        await this.loadQuestionSets();
+        const questionSetId = await this.customQuestionService.uploadQuestions(this.selectedFile, questionSetName).toPromise();
         this.successMessage = `Question set "${questionSetName}" uploaded successfully!`;
         this.resetForm();
+        await this.loadQuestionSets();
       } catch (error) {
         this.errorMessage = 'Error uploading questions. Please try again.';
         console.error('Error uploading questions:', error);
@@ -111,24 +117,19 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     }
   }
 
-  loadQuestionSets() {
-    this.isLoading = true;
-    this.errorMessage = '';
-    const subscription = this.customQuestionService.getQuestionSetIds()
-      .pipe(
-        finalize(() => this.isLoading = false)
-      )
+  private loadQuestionSets() {
+    this.questionSubscription = this.customQuestionService.getQuestionSets()
       .subscribe({
-        next: (questionSetIds) => {
-          this.uploadedQuestionSets = questionSetIds;
+        next: (questionSets) => {
+          this.questionSets = questionSets;
         },
         error: (error) => {
-          this.errorMessage = 'Error loading question sets. Please try again.';
           console.error('Error loading question sets:', error);
+          this.errorMessage = 'Failed to load question sets. Please try again.';
         }
       });
-    this.questionSubscription.add(subscription);
   }
+
 
   async createGame(questionSetId: string) {
     this.isLoading = true;
