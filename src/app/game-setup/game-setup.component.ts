@@ -47,7 +47,6 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     
   ) {
     this.uploadForm = this.formBuilder.group({
-      file: ['', Validators.required],
       questionSetName: ['', [Validators.required, Validators.minLength(3)]]
     });
 
@@ -77,19 +76,21 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     }
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    this.uploadForm.patchValue({ file: file });
-    this.uploadForm.get('file')?.updateValueAndValidity();
-    this.selectedFile = file;
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0];
+    } else {
+      this.selectedFile = null;
+    }
   }
 
   async uploadQuestions() {
-    this.isLoading = true;
     this.errorMessage = '';
     this.successMessage = '';
 
     if (this.uploadForm.valid && this.selectedFile) {
+      this.isLoading = true;
       try {
         const questionSetName = this.uploadForm.get('questionSetName')?.value;
         if (!questionSetName) {
@@ -102,11 +103,12 @@ export class GameSetupComponent implements OnInit, OnDestroy {
       } catch (error) {
         this.errorMessage = 'Error uploading questions. Please try again.';
         console.error('Error uploading questions:', error);
+      } finally {
+        this.isLoading = false;
       }
     } else {
       this.errorMessage = 'Please fill in all required fields and select a file.';
     }
-    this.isLoading = false;
   }
 
   loadQuestionSets() {

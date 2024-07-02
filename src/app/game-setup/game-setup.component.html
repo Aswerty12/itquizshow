@@ -11,8 +11,8 @@
       <form [formGroup]="uploadForm" (ngSubmit)="uploadQuestions()">
         <div>
           <label for="file-upload">Upload File:</label>
-          <input type="file" id="file-upload" (change)="onFileSelected($event)" formControlName="file" required>
-          <div *ngIf="uploadForm.get('file')?.invalid && uploadForm.get('file')?.touched" class="error-message">
+          <input type="file" id="file-upload" (change)="onFileSelected($event)" #fileInput required>
+          <div *ngIf="!selectedFile && uploadForm.touched" class="error-message">
             Please select a file.
           </div>
         </div>
@@ -23,7 +23,7 @@
             Please enter a name (minimum 3 characters).
           </div>
         </div>
-        <button type="submit" [disabled]="uploadForm.invalid || isLoading">Upload Questions</button>
+        <button type="submit" [disabled]="!selectedFile || uploadForm.invalid || isLoading">Upload Questions</button>
       </form>
     </section>
   
