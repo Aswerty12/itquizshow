@@ -63,6 +63,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
       this.timer = timerValue;
     });
     this.loadQuestionSets();
+    this.gameCode = this.gameService.currentGameId;
   }
 
   ngOnDestroy(): void {

@@ -1,4 +1,4 @@
-<div *ngIf="gameState === 'stopped'">
+<div class="div-stopped" *ngIf="gameState === 'stopped'">
   <h2>Select Question Set</h2>
   <select title="Select Question Set" [(ngModel)]="selectedQuestionSetId">
     <option value="">Select a question set</option>
@@ -8,7 +8,7 @@
   <button (click)="createGame()">Create Game</button>
 </div>
 
-<div *ngIf="gameState === 'waiting'">
+<div class="div-waiting" *ngIf="gameState === 'waiting'">
   <h2>Waiting Room</h2>
   <p>Game Code: {{ gameCode }}</p>
   <h3>Players:</h3>
@@ -18,7 +18,7 @@
   <button (click)="startGame()">Start Game</button>
 </div>
 
-<div *ngIf="gameState === 'started'">
+<div class="div-started" *ngIf="gameState === 'started'">
   <h2>Round {{ roundNumber }}</h2>
   <h2>{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
   <h2>Question {{ currentQuestion?.question }}</h2>
@@ -32,12 +32,12 @@
   </ul>
 </div>
 
-<div *ngIf="gameState === 'paused'">
+<div class="div-paused" *ngIf="gameState === 'paused'">
   <p>Game Paused</p>
   <button (click)="resumeGame()">Resume Game</button>
 </div>
 
-<div *ngIf="gameState === 'ended'">
+<div class="div-ended" *ngIf="gameState === 'ended'">
   <h2>Game Over</h2>
   <h3>Final Leaderboard</h3>
   <ol>
