@@ -9,7 +9,7 @@ This project is a kahoot-style clone (but with identification instead of multipl
 Currently this project features two sides and a login screen:
 * A landing page, an about page, and a 404 page
 * A login screen that players can log in from using a google or anonymous account
-* A player side that can login join a game, answer questions and receive points
+* A player side that can login join a game, answer questions and receive points (player may only answer a question once).
 * A host side that can upload question sets, start a game, and manage a session.
 
 ### Uploading Question Sets
