@@ -30,7 +30,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   uploadForm: FormGroup;
-  joinForm: FormGroup;
+  //joinForm: FormGroup;
   selectedFile: File | null = null;
   uploadedQuestionSets: string[] = [];
   gameData: GameData | null = null;
@@ -56,9 +56,9 @@ export class GameSetupComponent implements OnInit, OnDestroy {
       questionSetName: ['', [Validators.required, Validators.minLength(3)]]
     });
 
-    this.joinForm = this.formBuilder.group({
+    /*this.joinForm = this.formBuilder.group({
       gameId: ['', [Validators.required, Validators.minLength(6)]]
-    });
+    });*/
   }
 
   ngOnInit(): void {
@@ -148,6 +148,8 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
+  /*Remove if I can't come up with a better way
+
   async joinGame() {
     this.isLoading = true;
     this.errorMessage = '';
@@ -167,7 +169,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Please enter a valid Game ID.';
     }
     this.isLoading = false;
-  }
+  }*/
 
   previewQuestionSet(questionSetId: string) {
     this.isLoading = true;

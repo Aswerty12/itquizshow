@@ -20,3 +20,9 @@
 
   <p class="score">Your Score: {{ playerScore }}</p>
 </div>
+
+<div class="game-container" *ngIf="gameService.getGameState() === 'waiting'">
+  <h2>Waiting for the game to start...</h2>
+  <p>Game Code: {{ gameId }}</p>
+  <p>Your Name: {{ playerName }}</p>
+</div>

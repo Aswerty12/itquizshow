@@ -32,6 +32,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   questionSubscription: Subscription | null = null;
   playerSubscription: Subscription | null = null;
   timerSubscription: Subscription | null = null;
+  gameChangesSubscription : Subscription | null = null; 
 
   constructor(
     public gameService: GameService,
@@ -68,6 +69,8 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
     this.timerSubscription = this.gameService.timer$.subscribe(timerValue => {
       this.timer = timerValue;
     });
+    //Subscribe to game changes may replace all of these later
+    this.subscribeToGameChanges();
   }
 
   ngOnDestroy(): void {
@@ -75,6 +78,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
     this.questionSubscription?.unsubscribe();
     this.playerSubscription?.unsubscribe();
     this.timerSubscription?.unsubscribe();
+    this.unsubscribeFromGameChanges();
   }
 
   // Handle game state changes
@@ -108,11 +112,27 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
 
   // Start the timer 
   private startTimer() {
-    this.timer = 30; // Initialize timer value if not already set by the service
+    //this.timer = 30; // This should be the current value of the timer depending on what the timer is at right now
   }
 
   // Stop the timer
   private stopTimer() {
     // No need to manually stop the timer, the service handles this
+  }
+
+  subscribeToGameChanges() {
+    const gameChangesObservable = this.gameService.listenToGameChanges();
+    if (gameChangesObservable) {
+      this.gameChangesSubscription = gameChangesObservable.subscribe();
+    } else {
+      this.gameChangesSubscription = null;
+    }
+  }
+  
+  unsubscribeFromGameChanges() {
+    if (this.gameChangesSubscription) {
+      this.gameChangesSubscription.unsubscribe();
+      this.gameChangesSubscription = null;
+    }
   }
 }

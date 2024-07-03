@@ -36,6 +36,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   private playersSubscription: Subscription | null = null;
   private timerSubscription: Subscription | null = null;
   private questionSetsSubscription: Subscription | null = null;
+  private gameChangesSubscription: Subscription | null = null;
 
   constructor(
     private gameService: GameService,
@@ -64,6 +65,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     });
     this.loadQuestionSets();
     this.gameCode = this.gameService.currentGameId;
+    this.subscribeToGameChanges();
   }
 
   ngOnDestroy(): void {
@@ -72,7 +74,10 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.playersSubscription?.unsubscribe();
     this.timerSubscription?.unsubscribe();
     this.questionSetsSubscription?.unsubscribe();
+    this.unsubscribeFromGameChanges();
     this.gameService.stopGame();
+    //this.gameService.deleteGame();
+    //This is commented out for now as not having them be deleted immediately is good for debug
   }
 
   async createGame() {
@@ -92,6 +97,10 @@ export class GameHostComponent implements OnInit, OnDestroy {
   startGame() {
     this.gameService.startGame();
   }
+
+  startNextQuestion() {
+    this.gameService.startGame();
+  }// temp until I find out how this is used
 
   nextQuestion() {
     this.gameService.nextQuestion();
@@ -124,5 +133,21 @@ export class GameHostComponent implements OnInit, OnDestroy {
           // this.errorMessage = 'Failed to load question sets. Please try again.';
         }
       });
+  }
+
+  subscribeToGameChanges() {
+    const gameChangesObservable = this.gameService.listenToGameChanges();
+    if (gameChangesObservable) {
+      this.gameChangesSubscription = gameChangesObservable.subscribe();
+    } else {
+      this.gameChangesSubscription = null;
+    }
+  }
+  
+  unsubscribeFromGameChanges() {
+    if (this.gameChangesSubscription) {
+      this.gameChangesSubscription.unsubscribe();
+      this.gameChangesSubscription = null;
+    }
   }
 }

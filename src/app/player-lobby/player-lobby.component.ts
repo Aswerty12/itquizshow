@@ -4,7 +4,7 @@ import { AccountService } from '../account.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../game.service';
-import { Subscription } from 'rxjs';
+import { Subscription , lastValueFrom} from 'rxjs';
 
 interface User {
   displayName?: string | null;
@@ -23,6 +23,7 @@ export class PlayerLobbyComponent implements OnInit {
 
   gameId: string = '';
   playerName: string = 'Anonymous User';
+  playeruID: string = '';
   isLoading = false;
 
   errorMessage: string = ''; // To display error messages
@@ -39,25 +40,26 @@ export class PlayerLobbyComponent implements OnInit {
     this.userSubscription = this.accountService.getCurrentUser().subscribe(user => {
       if (user) {
         this.playerName = user.displayName || user.email || 'Anonymous User';
+        this.playeruID = user.uid;
       }
 
     });
   }
 
+  //You need to fix this join game method before starting the server again
   async joinGame() {
     this.isLoading = true;
-    try {
-      const playerId = await this.gameService.joinGame(this.gameId, this.playerName);
+    try {      
+      const playerId = await this.gameService.joinGame(this.gameId, this.playerName, this.playeruID);
       await this.router.navigate(['/game-player', this.gameId], { queryParams: { playerId } });
     } catch (error) {
       console.error('Error joining game:', error);
-      // Handle error (e.g., show a message to the user)
       this.errorMessage = "Failed to join the game. Please try again.";
     } finally {
       this.isLoading = false;
-    }
-    
+    }    
   }
+  
   logout() {
     this.accountService.logout();
     this.router.navigate(['/']); // Navigate to the home page or another desired route

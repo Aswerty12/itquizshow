@@ -38,18 +38,8 @@
       </div>
     </section>
   
-    <!-- Game Joining Section -->
-    <section class="game-joining-section">
-      <h2>Join a Game</h2>
-      <form [formGroup]="joinForm" (ngSubmit)="joinGame()">
-        <input type="text" placeholder="Game ID" formControlName="gameId">
-        <div *ngIf="joinForm.get('gameId')?.invalid && joinForm.get('gameId')?.touched" class="error-message">
-          Please enter a valid Game ID (minimum 6 characters).
-        </div>
-        <button type="submit" [disabled]="joinForm.invalid || isLoading">Join Game</button>
-      </form>
-    </section>
-  
+    <!-- If I get around to it place the join form and rejoin section here-->
+     
     <!-- Question Set Preview Modal -->
     <div *ngIf="previewQuestions" class="preview-modal">
       <div class="preview-content">

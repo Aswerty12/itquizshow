@@ -23,7 +23,7 @@
   <h2>{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
   <h2>Question {{ currentQuestion?.question }}</h2>
   <p>Time Remaining: {{ timer }}</p>
-  <button (click)="nextQuestion()">Next Question</button>
+  <button (click)="startNextQuestion()">Next Question</button>
   <h2>Leaderboard</h2>
   <ul>
     <li *ngFor="let player of leaderboard">

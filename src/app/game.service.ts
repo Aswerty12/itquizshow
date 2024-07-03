@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, getDoc, setDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Question } from './question';
+import { Router } from '@angular/router';
 
 
 export interface Player {
@@ -55,7 +56,7 @@ export class GameService {
 
   constructor(
     private firestore: Firestore,
-
+    private router : Router
   ) {}
 
   get currentGameId(): string {
@@ -81,7 +82,7 @@ export class GameService {
     this.gameStateSubject.next('waiting');
   }
 
-  async joinGame(gameId: string, playerName: string): Promise<string> {
+  async joinGame(gameId: string, playerName: string, userId: string): Promise<string> {
     this.gameId = gameId;
 
     try {
@@ -92,23 +93,33 @@ export class GameService {
 
         this.questions = gameData.questions || [];
         this.players = gameData.players || [];
-        this.gameState = gameData.gameState || 'stopped';
+        this.gameState = gameData.gameState || 'waiting';
         this.currentQuestionIndex = gameData.currentQuestionIndex || 0;
         this.roundNumber = gameData.roundNumber || 1;
 
-        const newPlayerId = doc(collection(this.firestore, 'games')).id;
-        const newPlayer: Player = {
-          id: newPlayerId,
-          name: playerName,
-          score: 0,
-          timestamp: new Date(),
-          lastanswertimestamp: new Date(),
-          isCorrect: false
-        };
-        this.players.push(newPlayer);
+        let existingPlayer = this.players.find(p => p.id === userId);
+
+        if (existingPlayer) {
+          existingPlayer.name = playerName;
+          existingPlayer.timestamp = new Date();
+        } else {
+          const newPlayer: Player = {
+            id: userId,
+            name: playerName,
+            score: 0,
+            timestamp: new Date(),
+            lastanswertimestamp: new Date(),
+            isCorrect: false
+          };
+          this.players.push(newPlayer);
+        }
+
+        this.gameStateSubject.next(this.gameState);
+        this.playersSubject.next(this.players);
+        this.currentQuestionSubject.next(this.questions[this.currentQuestionIndex]);
 
         await this.updateGameState();
-        return newPlayerId;
+        return userId;
       } else {
         throw new Error(`Game with ID ${this.gameId} does not exist.`);
       }
@@ -131,17 +142,17 @@ export class GameService {
 
   async nextQuestion() {
     if (this.currentQuestionIndex >= this.questions.length - 1) {
-      this.gameState = 'stopped';
+      this.gameState = 'ended';
       this.currentQuestionIndex = 0;
       this.gameStateSubject.next(this.gameState);
-      this.stopGame();
       await this.updateGameState();
       return;
     }
 
     this.currentQuestionIndex++;
+    this.roundNumber++;
     this.currentQuestionSubject.next(this.questions[this.currentQuestionIndex]);
-    this.startTimer();
+    this.gameStateSubject.next('waiting');
     await this.updateGameState();
   }
 
@@ -166,7 +177,18 @@ export class GameService {
     await this.updateGameState();
   }
 
+  async deleteGame() {
+    if (this.gameId) {
+      await deleteDoc(doc(this.firestore, 'games', this.gameId));
+      this.gameId = '';
+      this.gameState = 'stopped';
+      this.gameStateSubject.next(this.gameState);
+      this.router.navigate(['/']);
+    }
+  }
+
   private calculatePoints(level: Question['level']): number {
+    //Function to give bonus points based on speed
     const basePoints = this.questionConfig[level].points;
     const timeBonus = Math.floor((this.timerValue / this.questionConfig[level].time) * basePoints);
     return basePoints + timeBonus;
@@ -295,5 +317,33 @@ export class GameService {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
     }
+  }
+  listenToGameChanges(): Observable<void> | undefined {
+    if (this.gameId) {
+      return new Observable<void>((observer) => {
+        const gameDoc = doc(this.firestore, 'games', this.gameId);
+        const unsubscribe = onSnapshot(gameDoc, (snapshot) => {
+          if (snapshot.exists()) {
+            const gameData = snapshot.data() as GameData;
+            this.questions = gameData.questions || [];
+            this.players = gameData.players || [];
+            this.gameState = gameData.gameState || 'waiting';
+            this.currentQuestionIndex = gameData.currentQuestionIndex || 0;
+            this.roundNumber = gameData.roundNumber || 1;
+  
+            this.gameStateSubject.next(this.gameState);
+            this.playersSubject.next(this.players);
+            this.currentQuestionSubject.next(this.questions[this.currentQuestionIndex]);
+          } else {
+            console.log('Game no longer exists');
+            this.router.navigate(['/']);
+          }
+        });
+  
+        // Unsubscribe when the Observable is unsubscribed
+        return () => unsubscribe();
+      });
+    }
+    return undefined; // Ensure the function always returns a value
   }
 }
