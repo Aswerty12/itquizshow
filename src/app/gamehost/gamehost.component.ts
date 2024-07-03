@@ -99,15 +99,11 @@ export class GameHostComponent implements OnInit, OnDestroy {
   }
 
   startNextQuestion() {
-    this.gameService.startGame();
+    this.gameService.startNextQuestion();
   }// temp until I find out how this is used
 
   nextQuestion() {
     this.gameService.nextQuestion();
-  }
-
-  pauseGame() {
-    this.gameService.pauseGame();
   }
 
   resumeGame() {

@@ -1,19 +1,18 @@
 <div class="game-container" *ngIf="gameService.getGameState() === 'started'">
   <h2>Round {{ gameService.getCurrentRound() }}</h2> 
   <h2>Question {{ currentQuestion?.question }}</h2>
-  <p class="timer">Time Remaining: {{ timer }}</p>
 
   <input 
     type="text" 
     [(ngModel)]="answer" 
     placeholder="Enter your answer" 
-    [disabled]="isSubmitting"
+    [disabled]="isSubmitting || hasSubmittedAnswer"
     class="answer-input">
   <button 
     (click)="submitAnswer()" 
-    [disabled]="isSubmitting"
+    [disabled]="isSubmitting || hasSubmittedAnswer"
     class="submit-button">
-    {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+    {{ isSubmitting ? 'Submitting...' : (hasSubmittedAnswer ? 'Submitted' : 'Submit') }}
   </button>
 
   <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -25,4 +24,16 @@
   <h2>Waiting for the game to start...</h2>
   <p>Game Code: {{ gameId }}</p>
   <p>Your Name: {{ playerName }}</p>
+</div>
+
+<div class="game-container" *ngIf="gameService.getGameState() === 'in-between'">
+  <h2>Get ready for the next question!</h2>
+  <p>Current Score: {{ playerScore }}</p>
+  <p>Waiting for the host to start the next question...</p>
+</div>
+
+<div class="game-container" *ngIf="gameService.getGameState() === 'ended'">
+  <h2>Thank you for playing</h2>
+  <p>Final Score: {{ playerScore }}</p>
+  <p>Please wait for further instructions.</p>
 </div>

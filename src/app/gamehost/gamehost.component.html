@@ -21,9 +21,14 @@
 <div class="div-started" *ngIf="gameState === 'started'">
   <h2>Round {{ roundNumber }}</h2>
   <h2>{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
-  <h2>Question {{ currentQuestion?.question }}</h2>
-  <p>Time Remaining: {{ timer }}</p>
-  <button (click)="startNextQuestion()">Next Question</button>
+  
+  <div class="highlight">
+    <h1 class="question">Question: {{ currentQuestion?.question }}</h1>
+    <h2 class="timer">Time Remaining: {{ timer }}</h2>
+  </div>
+  
+  
+  
   <h2>Leaderboard</h2>
   <ul>
     <li *ngFor="let player of leaderboard">
@@ -31,6 +36,7 @@
     </li>
   </ul>
 </div>
+
 
 <div class="div-paused" *ngIf="gameState === 'paused'">
   <p>Game Paused</p>
@@ -46,4 +52,15 @@
     </li>
   </ol>
   <button (click)="createGame()">Start New Game</button>
+</div>
+
+<div class="div-in-between" *ngIf="gameState === 'in-between'">
+  <h2>Question Completed</h2>
+  <h3>Current Leaderboard</h3>
+  <ul>
+    <li *ngFor="let player of leaderboard">
+      {{ player.name }} - {{ player.score }} points
+    </li>
+  </ul>
+  <button (click)="startNextQuestion()">Start Next Question</button>
 </div>

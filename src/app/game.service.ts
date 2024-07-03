@@ -149,11 +149,19 @@ export class GameService {
       return;
     }
 
+    this.gameState = 'in-between';
+    this.gameStateSubject.next(this.gameState);
+    await this.updateGameState();
+  }
+
+  async startNextQuestion() {
     this.currentQuestionIndex++;
     this.roundNumber++;
     this.currentQuestionSubject.next(this.questions[this.currentQuestionIndex]);
-    this.gameStateSubject.next('waiting');
+    this.gameState = 'started';
+    this.gameStateSubject.next(this.gameState);
     await this.updateGameState();
+    this.startTimer();
   }
 
   async submitAnswer(playerId: string, answer: string) {
@@ -188,10 +196,10 @@ export class GameService {
   }
 
   private calculatePoints(level: Question['level']): number {
-    //Function to give bonus points based on speed
+    //Future expansion if points by speed becoems required
     const basePoints = this.questionConfig[level].points;
-    const timeBonus = Math.floor((this.timerValue / this.questionConfig[level].time) * basePoints);
-    return basePoints + timeBonus;
+    //const timeBonus = Math.floor((this.timerValue / this.questionConfig[level].time) * basePoints);
+    return basePoints;
   }
 
   async pauseGame() {

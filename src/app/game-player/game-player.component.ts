@@ -23,6 +23,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   playerScore: number = 0;
   answer: string = ''; // Player's current answer
   playerId: string = '';
+  hasSubmittedAnswer: boolean = false; //To prevent double dipping answer
 
   errorMessage: string = ''; // To display error messages
   isSubmitting: boolean = false; // To track if an answer is being submitted
@@ -85,6 +86,7 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   private handleGameStateChange(state: string): void {
     if (state === 'started') {
       this.startTimer();
+      this.resetAnswerSubmission();
     } else if (state === 'stopped' || state === 'paused') {
       this.stopTimer(); //placeholder for stopTimer event
     }
@@ -92,16 +94,15 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
 
   // Handle player answer submission
   async submitAnswer() {
-    if (this.gameService.getGameState() !== 'started') {
-      console.error("Cannot submit answer: game is not in progress");
+    if (this.gameService.getGameState() !== 'started' || this.hasSubmittedAnswer) {
       return;
     }
-  
+
     this.isSubmitting = true;
     try {
       await this.gameService.submitAnswer(this.playerId, this.answer);
       this.answer = '';
-      // Maybe show a success message
+      this.hasSubmittedAnswer = true;
     } catch (error) {
       console.error("Error submitting answer:", error);
       this.errorMessage = "An error occurred while submitting your answer.";
@@ -110,9 +111,13 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
     }
   }
 
+  private resetAnswerSubmission() {
+    this.hasSubmittedAnswer = false;
+  }
+
   // Start the timer 
   private startTimer() {
-    //this.timer = 30; // This should be the current value of the timer depending on what the timer is at right now
+    //I'm keeping this as a placeholder for now
   }
 
   // Stop the timer
