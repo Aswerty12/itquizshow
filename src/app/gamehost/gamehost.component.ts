@@ -76,7 +76,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     this.questionSetsSubscription?.unsubscribe();
     this.unsubscribeFromGameChanges();
     this.gameService.stopGame();
-    //this.gameService.deleteGame();
+    this.gameService.deleteGame();
     //This is commented out for now as not having them be deleted immediately is good for debug
   }
 

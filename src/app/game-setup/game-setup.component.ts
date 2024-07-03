@@ -172,6 +172,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   }*/
 
   previewQuestionSet(questionSetId: string) {
+    console.log('Starting to load question set:', questionSetId);
     this.isLoading = true;
     this.errorMessage = '';
     this.previewQuestions = null;
@@ -182,9 +183,11 @@ export class GameSetupComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (questions) => {
+          console.log('Received questions:', questions);
           this.previewQuestions = questions;
         },
         error: (error) => {
+          console.error('Detailed error:', JSON.stringify(error));
           this.errorMessage = 'Error loading question set preview. Please try again.';
           console.error('Error loading question set preview:', error);
         }

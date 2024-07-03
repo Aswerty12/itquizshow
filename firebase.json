@@ -15,7 +15,7 @@
     "singleProjectMode": true
   },
   "hosting": {
-    "public": "dist/itquizshow",
+    "public": "dist/itquizshow/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
