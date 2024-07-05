@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, addDoc, getDocs, getDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, getDocs, getDoc, doc, query } from '@angular/fire/firestore';
 import { from, Observable, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import * as Papa from 'papaparse';
@@ -101,17 +101,27 @@ export class CustomQuestionService {
     return questionSetRef.id;
   }
 
-  loadQuestions(questionSetId: string): Observable<Question[]> {
+  loadQuestions(questionSetId: string): Observable<any[]> {
+    console.log('loadQuestions called with id:', questionSetId);
     const docRef = doc(this.firestore, 'questionSets', questionSetId);
+
     return from(getDoc(docRef)).pipe(
-      map(docSnapshot => {
-        if (docSnapshot.exists()) {
-          return docSnapshot.data()?.['questions'] as Question[];
+      tap(docSnap => console.log('Document exists:', docSnap.exists())),
+      map(docSnap => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          console.log('Document data:', data);
+          return data['questions'] || [];
         } else {
-          throw new Error(`Question set with ID ${questionSetId} not found`);
+          console.log('No such document!');
+          return [];
         }
       }),
-      catchError(error => throwError(() => error))
+      tap(questions => console.log('Mapped questions:', questions)),
+      catchError(error => {
+        console.error('Error in loadQuestions:', error);
+        throw error;
+      })
     );
   }
 

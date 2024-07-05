@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild,ElementRef } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Subscription, throwError } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs/operators';
 
 import { CustomQuestionService } from '../customquestion.service';
 import { GameService } from '../game.service';
@@ -148,28 +148,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-  /*Remove if I can't come up with a better way
 
-  async joinGame() {
-    this.isLoading = true;
-    this.errorMessage = '';
-    this.successMessage = '';
-
-    if (this.joinForm.valid) {
-      try {
-        const gameId = this.joinForm.get('gameId')?.value;
-        await this.gameService.joinGame(gameId, 'Player'); // Replace 'Player' with actual player name
-        this.successMessage = 'Joined game successfully!';
-        this.router.navigate(['/game-player', gameId]);
-      } catch (error) {
-        this.errorMessage = 'Error joining game. Please check the Game ID and try again.';
-        console.error('Error joining game:', error);
-      }
-    } else {
-      this.errorMessage = 'Please enter a valid Game ID.';
-    }
-    this.isLoading = false;
-  }*/
 
   previewQuestionSet(questionSetId: string) {
     console.log('Starting to load question set:', questionSetId);
@@ -177,25 +156,24 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.previewQuestions = null;
 
-    const subscription = this.customQuestionService.loadQuestions(questionSetId)
-      .pipe(
-        finalize(() => this.isLoading = false)
-      )
+    // Subscribe to the observable and handle responses within the component
+    this.questionSubscription = this.customQuestionService.loadQuestions(questionSetId)
       .subscribe({
         next: (questions) => {
           console.log('Received questions:', questions);
           this.previewQuestions = questions;
+          this.isLoading = false;
         },
         error: (error) => {
-          console.error('Detailed error:', JSON.stringify(error));
+          console.error('Error loading questions:', error);
           this.errorMessage = 'Error loading question set preview. Please try again.';
-          console.error('Error loading question set preview:', error);
+          this.isLoading = false;
+        },
+        complete: () => {
+          console.log('Question loading completed');
         }
       });
-
-    this.questionSubscription.add(subscription);
   }
-
 
   closePreview() {
     this.previewQuestions = null;
