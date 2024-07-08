@@ -12,6 +12,8 @@ interface QuestionSet {
   name: string;
 }
 
+
+
 @Component({
   selector: 'app-game-host',
   templateUrl: './gamehost.component.html',
@@ -38,13 +40,19 @@ export class GameHostComponent implements OnInit, OnDestroy {
   private questionSetsSubscription: Subscription | null = null;
   private gameChangesSubscription: Subscription | null = null;
 
+  private startSound : HTMLAudioElement;
+  private endSound : HTMLAudioElement;
   constructor(
     private gameService: GameService,
     private customQuestionService : CustomQuestionService
-  ) {}
+  ) {
+    this.startSound = new Audio('audio/game-start.mp3');
+    this.endSound = new Audio('audio/negative_beeps.mp3');
+  }
 
   ngOnInit(): void {
     this.gameStateSubscription = this.gameService.gameState$.subscribe(state => {
+      this.handleGameStateChange(state);
       this.gameState = state;     
     });
 
@@ -80,19 +88,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     //This is commented out for now as not having them be deleted immediately is good for debug
   }
 
-  async createGame() {
-    if (this.selectedQuestionSetId) {
-      try {
-        await this.gameService.createNewGame(this.selectedQuestionSetId);
-        this.gameCode = this.gameService.currentGameId;
-        console.log('Game created successfully');
-      } catch (error) {
-        console.error('Error creating game:', error);
-      }
-    } else {
-      console.error('No question set selected');
-    }
-  }
+  
 
   startGame() {
     this.gameService.startGame();
@@ -112,6 +108,14 @@ export class GameHostComponent implements OnInit, OnDestroy {
 
   endGame() {
     this.gameService.endGame();
+  }
+
+  private handleGameStateChange(state: string): void {
+    if (state === 'started') {
+      this.startSound.play();
+    } else if (state === 'in-between' || state === 'ended') {
+      this.endSound.play();
+    }
   }
 
   private updateLeaderboard() {

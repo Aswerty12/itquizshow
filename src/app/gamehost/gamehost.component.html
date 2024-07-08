@@ -1,66 +1,54 @@
 <div class="div-stopped" *ngIf="gameState === 'stopped'">
-  <h2>Select Question Set</h2>
-  <select title="Select Question Set" [(ngModel)]="selectedQuestionSetId">
-    <option value="">Select a question set</option>
-    <option *ngFor="let set of questionSets" [value]="set.id">{{ set.name }}</option>
-  </select>
-
-  <button (click)="createGame()">Create Game</button>
+  <h2>GAME IS IN STOP STATE. Please Leave to reset game.</h2>
 </div>
 
 <div class="div-waiting" *ngIf="gameState === 'waiting'">
-  <h2>Waiting Room</h2>
-  <p>Game Code: {{ gameCode }}</p>
-  <h3>Players:</h3>
+  <h2 class="large-text">Waiting Room</h2>
+  <p class="large-text">Game Code: {{ gameCode }}</p>
+  <h3 class="large-text">Players:</h3>
   <ul>
-    <li *ngFor="let player of players">{{ player.name }}</li>
+    <li *ngFor="let player of players" class="large-text">{{ player.name }}</li>
   </ul>
-  <button (click)="startGame()">Start Game</button>
+  <button class="large-button" (click)="startGame()">Start Game</button>
 </div>
 
 <div class="div-started" *ngIf="gameState === 'started'">
-  <h2>Round {{ roundNumber }}</h2>
-  <h2>{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
-  
+  <h2 class="large-text">Round {{ roundNumber }}</h2>
+  <h2 class="large-text">{{currentQuestion?.level}} Category {{currentQuestion?.category}}</h2>
   <div class="highlight">
-    <h1 class="question">Question: {{ currentQuestion?.question }}</h1>
-    <h2 class="timer">Time Remaining: {{ timer }}</h2>
+    <h1 class="question large-text">Question: {{ currentQuestion?.question }}</h1>
+    <h2 class="timer large-text">Time Remaining: {{ timer }}</h2>
   </div>
-  
-  
-  
-  <h2>Leaderboard</h2>
+  <h2 class="large-text">Leaderboard</h2>
   <ul>
-    <li *ngFor="let player of leaderboard">
+    <li *ngFor="let player of leaderboard" class="large-text">
       {{ player.name }} - {{ player.score }} points
     </li>
   </ul>
 </div>
 
-
 <div class="div-paused" *ngIf="gameState === 'paused'">
-  <p>Game Paused</p>
-  <button (click)="resumeGame()">Resume Game</button>
+  <p class="large-text">Game Paused</p>
+  <button class="large-button" (click)="resumeGame()">Resume Game</button>
 </div>
 
 <div class="div-ended" *ngIf="gameState === 'ended'">
-  <h2>Game Over</h2>
-  <h3>Final Leaderboard</h3>
+  <h2 class="large-text">Game Over</h2>
+  <h3 class="large-text">Final Leaderboard</h3>
   <ol>
-    <li *ngFor="let player of leaderboard">
+    <li *ngFor="let player of leaderboard" class="large-text">
       {{ player.name }} - {{ player.score }} points
     </li>
   </ol>
-  <button (click)="createGame()">Start New Game</button>
 </div>
 
 <div class="div-in-between" *ngIf="gameState === 'in-between'">
-  <h2>Question Completed</h2>
-  <h3>Current Leaderboard</h3>
+  <h2 class="large-text">Question Completed</h2>
+  <h3 class="large-text">Current Leaderboard</h3>
   <ul>
-    <li *ngFor="let player of leaderboard">
+    <li *ngFor="let player of leaderboard" class="large-text">
       {{ player.name }} - {{ player.score }} points
     </li>
   </ul>
-  <button (click)="startNextQuestion()">Start Next Question</button>
+  <button class="large-button" (click)="startNextQuestion()">Start Next Question</button>
 </div>
