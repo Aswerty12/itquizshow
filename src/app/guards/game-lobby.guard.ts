@@ -23,18 +23,10 @@ export class GameLobbyGuard implements CanActivate {
   private async checkAccess(route: ActivatedRouteSnapshot): Promise<boolean | UrlTree> {
     const isLoggedIn = await this.accountService.isLoggedIn();
     if (!isLoggedIn) {
-      return this.router.parseUrl('/lobby');
+      return this.router.parseUrl('/');
     }
 
-    const gameId = route.paramMap.get('gameId');
-    if (!gameId) {
-      return this.router.parseUrl('/player-lobby');
-    }
 
-    const isValidGame = await this.gameService.isValidGame(gameId);
-    if (!isValidGame) {
-      return this.router.parseUrl('/player-lobby');
-    }
 
     return true;
   }
