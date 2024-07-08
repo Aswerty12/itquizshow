@@ -48,10 +48,10 @@ export class GameService {
   timer$ = this.timerSubject.asObservable();
 
   private questionConfig = {
-    EASY: { time: 15, points: 100 },
-    AVERAGE: { time: 30, points: 200 },
-    DIFFICULT: { time: 45, points: 300 },
-    CLINCHER: { time: 60, points: 500 }
+    EASY: { time: 15, points: 10 },
+    AVERAGE: { time: 30, points: 20 },
+    DIFFICULT: { time: 50, points: 30 },
+    CLINCHER: { time: 60, points: 50 }
   };
 
   constructor(
