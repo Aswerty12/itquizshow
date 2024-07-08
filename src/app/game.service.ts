@@ -16,6 +16,12 @@ export interface Player {
   timestamp: Date;
   lastanswertimestamp: Date;
   isCorrect: boolean;
+  correctAnswers: {
+    EASY: number;
+    AVERAGE: number;
+    DIFFICULT: number;
+    CLINCHER: number;
+  };
 }
 
 export interface GameData {
@@ -144,7 +150,13 @@ export class GameService {
             score: 0,
             timestamp: new Date(),
             lastanswertimestamp: new Date(),
-            isCorrect: false
+            isCorrect: false,
+            correctAnswers: {
+              EASY: 0,
+              AVERAGE: 0,
+              DIFFICULT: 0,
+              CLINCHER: 0
+            }
           };
           this.players.push(newPlayer);
         }
@@ -204,19 +216,25 @@ export class GameService {
     const currentQuestion = this.questions[this.currentQuestionIndex];
     const isCorrect = currentQuestion.answer === answer;
     const pointsEarned = isCorrect ? this.calculatePoints(currentQuestion.level) : 0;
-
+  
     this.players = this.players.map(p => {
       if (p.id === playerId) {
-        return {
+        const updatedPlayer = {
           ...p,
           score: p.score + pointsEarned,
           lastanswertimestamp: new Date(),
-          isCorrect: isCorrect
+          isCorrect: isCorrect,
+          correctAnswers: {
+            ...p.correctAnswers,
+            [currentQuestion.level]: (p.correctAnswers[currentQuestion.level] || 0) + (isCorrect ? 1 : 0)
+          }
         };
+        
+        return updatedPlayer;
       }
       return p;
     });
-
+  
     this.playersSubject.next(this.players);
     await this.updateGameState();
   }
@@ -325,7 +343,19 @@ export class GameService {
 
   async endGame(): Promise<void> {
     this.gameStateSubject.next('ended');
+    //this.specialLeaderboard = this.getSpecialLeaderboard();
     await this.updateGameState();
+  }
+
+  getSpecialLeaderboard(): Player[] {
+    return [...this.players].sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      const aTotalCorrect = Object.values(a.correctAnswers).reduce((sum, count) => sum + count, 0);
+      const bTotalCorrect = Object.values(b.correctAnswers).reduce((sum, count) => sum + count, 0);
+      return bTotalCorrect - aTotalCorrect;
+    });
   }
 
   async addPlayer(player: Player): Promise<void> {

@@ -25,6 +25,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   currentQuestion: Question | null = null;
   timer: number = 0;
   leaderboard: Player[] = [];
+  specialLeaderboard: Player[] = [];
   gameState: string = 'stopped';
   roundNumber: number = 1;
   players: Player[] = [];
@@ -122,6 +123,9 @@ export class GameHostComponent implements OnInit, OnDestroy {
 
   private updateLeaderboard() {
     this.leaderboard = [...this.players].sort((a, b) => b.score - a.score);
+    if (this.gameState === 'ended') {
+      this.specialLeaderboard = this.gameService.getSpecialLeaderboard();
+    }
   }
   private loadQuestionSets() {
     this.questionSetsSubscription = this.customQuestionService.getQuestionSets()

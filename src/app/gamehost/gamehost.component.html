@@ -35,11 +35,30 @@
 <div class="div-ended" *ngIf="gameState === 'ended'">
   <h2 class="large-text">Game Over</h2>
   <h3 class="large-text">Final Leaderboard</h3>
-  <ol>
-    <li *ngFor="let player of leaderboard" class="large-text">
-      {{ player.name }} - {{ player.score }} points
-    </li>
-  </ol>
+  <table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Easy</th>
+        <th>Average</th>
+        <th>Difficult</th>
+        <th>Clincher</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let player of specialLeaderboard; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ player.name }}</td>
+        <td>{{ player.score }}</td>
+        <td>{{ player.correctAnswers.EASY }}</td>
+        <td>{{ player.correctAnswers.AVERAGE }}</td>
+        <td>{{ player.correctAnswers.DIFFICULT }}</td>
+        <td>{{ player.correctAnswers.CLINCHER }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <div class="div-in-between" *ngIf="gameState === 'in-between'">
