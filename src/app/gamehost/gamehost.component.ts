@@ -29,6 +29,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
   roundNumber: number = 1;
   players: Player[] = [];
   gameCode: string = '';
+  hostWord: string = '';
 
   selectedQuestionSetId: string = '';
   questionSets: QuestionSet[] = [];
@@ -73,6 +74,7 @@ export class GameHostComponent implements OnInit, OnDestroy {
     });
     this.loadQuestionSets();
     this.gameCode = this.gameService.currentGameId;
+    this.hostWord = this.gameService.getHostWord();
     this.subscribeToGameChanges();
   }
 

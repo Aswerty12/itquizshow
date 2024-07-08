@@ -30,7 +30,7 @@ export class GameSetupComponent implements OnInit, OnDestroy {
   @ViewChild('fileInput') fileInput!: ElementRef;
 
   uploadForm: FormGroup;
-  //joinForm: FormGroup;
+  createGameForm: FormGroup;
   selectedFile: File | null = null;
   uploadedQuestionSets: string[] = [];
   gameData: GameData | null = null;
@@ -56,9 +56,9 @@ export class GameSetupComponent implements OnInit, OnDestroy {
       questionSetName: ['', [Validators.required, Validators.minLength(3)]]
     });
 
-    /*this.joinForm = this.formBuilder.group({
-      gameId: ['', [Validators.required, Validators.minLength(6)]]
-    });*/
+    this.createGameForm = this.formBuilder.group({
+      hostWord: ['', [Validators.required, Validators.minLength(3)]]
+    });
   }
 
   ngOnInit(): void {
@@ -136,8 +136,16 @@ export class GameSetupComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
     this.successMessage = '';
 
+    const hostWord = this.createGameForm.get('hostWord')?.value;
+
+    if (!hostWord) {
+      this.errorMessage = 'Please enter a host word.';
+      this.isLoading = false;
+      return;
+    }
+
     try {
-      await this.gameService.createNewGame(questionSetId);
+      await this.gameService.createNewGame(questionSetId, hostWord);
       const gameId = this.gameService.currentGameId;
       this.successMessage = `Game created successfully! Game ID: ${gameId}`;
       this.router.navigate(['/game-host', gameId]);

@@ -4,7 +4,7 @@
 
 <div class="div-waiting" *ngIf="gameState === 'waiting'">
   <h2 class="large-text">Waiting Room</h2>
-  <p class="large-text">Game Code: {{ gameCode }}</p>
+  <p class="large-text">Game Code: <strong>{{ hostWord }}</strong></p>
   <h3 class="large-text">Players:</h3>
   <ul>
     <li *ngFor="let player of players" class="large-text">{{ player.name }}</li>

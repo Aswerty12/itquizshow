@@ -25,6 +25,7 @@ export class PlayerLobbyComponent implements OnInit {
   playerName: string = 'Anonymous User';
   playeruID: string = '';
   isLoading = false;
+  hostWord: string = '';
 
   errorMessage: string = ''; // To display error messages
 
@@ -46,18 +47,29 @@ export class PlayerLobbyComponent implements OnInit {
     });
   }
 
-  //You need to fix this join game method before starting the server again
   async joinGame() {
     this.isLoading = true;
-    try {      
-      const playerId = await this.gameService.joinGame(this.gameId, this.playerName, this.playeruID);
-      await this.router.navigate(['/game-player', this.gameId], { queryParams: { playerId } });
+    this.errorMessage = '';
+
+    try {
+      console.log('Attempting to join game with host word:', this.hostWord);
+      const gameId = await this.gameService.joinGame(this.hostWord, this.playerName, this.playeruID);
+      
+      console.log('Joined game successfully. Game ID:', gameId);
+      
+      if (gameId) {
+        console.log('Navigating to:', `/game-player/${gameId}`);
+        await this.router.navigate(['/game-player', gameId], { queryParams: { playerId: this.playeruID } });
+        console.log('Navigation completed');
+      } else {
+        throw new Error('Failed to join the game. No game ID returned.');
+      }
     } catch (error) {
       console.error('Error joining game:', error);
-      this.errorMessage = "Failed to join the game. Please try again.";
+      this.errorMessage = "Failed to join the game. Please check the host word and try again.";
     } finally {
       this.isLoading = false;
-    }    
+    }
   }
   
   logout() {

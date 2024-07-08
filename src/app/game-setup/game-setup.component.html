@@ -33,7 +33,10 @@
       <div *ngIf="questionSets.length === 0">No question sets available.</div>
       <div *ngFor="let set of questionSets" class="question-set-item">
         <span>{{ set.name }}</span>
-        <button (click)="createGame(set.id)" [disabled]="isLoading">Create Game</button>
+        <form [formGroup]="createGameForm" (ngSubmit)="createGame(set.id)">
+          <input type="text" formControlName="hostWord" placeholder="Enter host word" required>
+          <button type="submit" [disabled]="createGameForm.invalid || isLoading">Create Game</button>
+        </form>
         <button (click)="previewQuestionSet(set.id)" [disabled]="isLoading">Preview</button>
       </div>
     </section>

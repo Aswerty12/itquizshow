@@ -4,6 +4,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Question } from './question';
 import { Router } from '@angular/router';
 
+interface GameMapping {
+  hostWord: string;
+  gameId: string;
+}
 
 export interface Player {
   id: string;
@@ -20,6 +24,7 @@ export interface GameData {
   gameState: string;
   currentQuestionIndex: number;
   roundNumber: number;
+  hostWord: string;
 }
 
 @Injectable({
@@ -34,6 +39,7 @@ export class GameService {
   private gameState: string = 'stopped';
   private timerValue: number = 30;
   private timerInterval: any;
+  private hostWord: string = '';
 
   private gameStateSubject = new BehaviorSubject<string>('stopped');
   gameState$ = this.gameStateSubject.asObservable();
@@ -59,12 +65,29 @@ export class GameService {
     private router : Router
   ) {}
 
+  private async createGameMapping(hostWord: string, gameId: string): Promise<void> {
+    console.log('Creating game mapping:', hostWord, '->', gameId);
+    await setDoc(doc(this.firestore, 'gameMappings', hostWord), { gameId });
+    console.log('Game mapping created successfully');
+  }
+
+  private async getGameIdFromHostWord(hostWord: string): Promise<string | null> {
+    const mappingDoc = await getDoc(doc(this.firestore, 'gameMappings', hostWord));
+    if (mappingDoc.exists()) {
+      return (mappingDoc.data() as GameMapping).gameId;
+    }
+    return null;
+  }
   get currentGameId(): string {
     return this.gameId;
   }
+  getHostWord(): string {
+    return this.hostWord;
+  }
 
-  async createNewGame(questionSetId: string): Promise<void> {
+  async createNewGame(questionSetId: string, hostWord: string): Promise<void> {
     this.gameId = doc(collection(this.firestore, 'games')).id;
+    this.hostWord = hostWord;
     this.questions = await this.loadQuestions(questionSetId);
     this.players = [];
     this.currentQuestionIndex = 0;
@@ -75,15 +98,27 @@ export class GameService {
       players: this.players,
       gameState: 'waiting',
       currentQuestionIndex: this.currentQuestionIndex,
-      roundNumber: this.roundNumber
+      roundNumber: this.roundNumber,
+      hostWord: this.hostWord // Ensure hostWord is included in gameData
     };
 
+    console.log('Creating new game with ID:', this.gameId, 'and host word:', this.hostWord);
+
     await setDoc(doc(this.firestore, 'games', this.gameId), gameData);
+    await this.createGameMapping(this.hostWord, this.gameId);
+
+    console.log('Game and mapping created successfully');
     this.gameStateSubject.next('waiting');
   }
 
-  async joinGame(gameId: string, playerName: string, userId: string): Promise<string> {
+  async joinGame(hostWord: string, playerName: string, userId: string): Promise<string> {
+    const gameId = await this.getGameIdFromHostWord(hostWord);
+    if (!gameId) {
+      throw new Error(`No game found with the host word: ${hostWord}`);
+    }
+
     this.gameId = gameId;
+    console.log('Found game with ID:', this.gameId);
 
     try {
       const gameDoc = await getDoc(doc(this.firestore, 'games', this.gameId));
@@ -127,6 +162,7 @@ export class GameService {
       console.error("Error joining the game: ", error);
       throw error;
     }
+
   }
 
   async startRound() {
@@ -188,13 +224,18 @@ export class GameService {
   async deleteGame() {
     if (this.gameId) {
       await deleteDoc(doc(this.firestore, 'games', this.gameId));
+      await this.deleteGameMapping(this.hostWord);
       this.gameId = '';
+      this.hostWord = '';
       this.gameState = 'stopped';
       this.gameStateSubject.next(this.gameState);
       this.router.navigate(['/']);
     }
   }
 
+  private async deleteGameMapping(hostWord: string): Promise<void> {
+    await deleteDoc(doc(this.firestore, 'gameMappings', hostWord));
+  }
   private calculatePoints(level: Question['level']): number {
     //Future expansion if points by speed becoems required
     const basePoints = this.questionConfig[level].points;
@@ -300,7 +341,8 @@ export class GameService {
       players: this.players,
       gameState: this.gameStateSubject.value,
       currentQuestionIndex: this.currentQuestionIndex,
-      roundNumber: this.roundNumber
+      roundNumber: this.roundNumber,
+      hostWord: this.hostWord
     };
   
     await updateDoc(doc(this.firestore, 'games', this.gameId), { ...gameData });

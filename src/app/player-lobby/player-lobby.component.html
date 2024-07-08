@@ -11,13 +11,13 @@
           <input 
             type="text" 
             placeholder="Enter Game ID" 
-            [(ngModel)]="gameId"
+            [(ngModel)]="hostWord"
             class="game-id-input"
           >
           <button 
             (click)="joinGame()" 
             class="join-button"
-            [disabled]="!gameId || isLoading"
+            [disabled]="!hostWord || isLoading"
           >
             Join Game
           </button>
