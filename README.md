@@ -12,11 +12,50 @@ Currently this project features two sides and a login screen:
 * A player side that can login join a game, answer questions and receive points (player may only answer a question once).
 * A host side that can upload question sets, start a game, and manage a session.
 
+## Web Hosting Requirement
+
+This project is meant to be hosted on firebase, which also means that there must be a google account associated with this project that can act as the Admin.
+
+###	Web Hosting Cost 
+
+As this project is only meant for a low user count the [firebase spark plan](https://firebase.google.com/pricing) is sufficient enough to give a no-cost solution for the project host. 
+
+
+### Software Requirements
+Whoever is cloning this project first needs to make sure they have at least
+*Node.js
+alongside 
+*angular/cli@18.0.2
+*firebase-tools@13.13.0
+installed globally on their machine via npm. 
+After that they should `git clone` this project then `npm install`. Afterwards follow the instructions in the Firebase section of this readme.
+
+### Hardware Requirements
+
+For users/players, any modern web browser can access the site.
+For Hosts/Presenters, ensure a large screen is used to present the host screen. Any modern browser can access the site. The actual site is hosted on the cloud via firebase so the load on the presenter computer is minimal.
+
+## Chair’s and Co-Chair’s System Functionalities
+The Host side of the website can upload question sets, host games, then run the game. They'll receive a short leaderboard that only contains score while the game is running for readability, then receive a full leaderboard at the end screen which contains full information of correct questions.
+
 ### Uploading Question Sets
 
 When uploading question sets, ensure that they follow the format of Question, Answer, Level (EASY, AVERAGE, DIFFICULT, CLINCHER), and CATEGORY to prevent any problems. If you have an excel spreadsheet, then extract the needed collumns with headers into a separate spreadsheet and save it as a `.csv` file. 
 
 ** Ensure that your csv has no extra blank lines. **
+
+## FAQ
+
+### I can't seem to upload my question set.
+
+Make sure that there are exactly as many rows as questions, saving from excel to csv saves an extra line so make sure that extra line is deleted before you try uploading.
+
+### How do I do a sudden death round for clincher?
+
+Due to how the services are coded, a sudden death (i.e end round the first time a correct answer is submitted) function would require a massive rework. The developer suggests that the hosts instead upload the clincher round questions separately then create a new game with the current winners, with the hosts looking at the leaderboard to see who gains the first point. If needed whoever holds admin rights can look at the game and compare timestamps if near simultaneous answers occur.
+
+### How do I delete question sets?
+The admin (aka the current user with the firebase permission) can log in to the [firebase console ](https://console.firebase.google.com/) and delete from the firestore database.
 
 ## Firebase Environment
 
