@@ -93,10 +93,33 @@ export class GameService {
     return this.hostWord;
   }
 
+  private randomizeQuestions(questions: Question[]): Question[] {
+    const levels = ['EASY', 'AVERAGE', 'DIFFICULT', 'CLINCHER'];
+    const randomizedQuestions: Question[] = [];
+
+    for (const level of levels) {
+      const questionsOfLevel = questions.filter(q => q.level === level);
+      if (questionsOfLevel.length > 0) {
+        this.shuffleArray(questionsOfLevel);
+        randomizedQuestions.push(...questionsOfLevel);
+      }
+    }
+
+    return randomizedQuestions;
+  }
+
+  private shuffleArray(array: any[]): void {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
   async createNewGame(questionSetId: string, hostWord: string): Promise<void> {
     this.gameId = doc(collection(this.firestore, 'games')).id;
     this.hostWord = hostWord;
-    this.questions = await this.loadQuestions(questionSetId);
+    const loadedQuestions = await this.loadQuestions(questionSetId);
+    this.questions = this.randomizeQuestions(loadedQuestions);
     this.players = [];
     this.currentQuestionIndex = 0;
     this.roundNumber = 1;
