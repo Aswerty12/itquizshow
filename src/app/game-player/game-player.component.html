@@ -22,8 +22,8 @@
 
 <div class="game-container" *ngIf="gameService.getGameState() === 'waiting'">
   <h2>Waiting for the game to start...</h2>
-  <p>School Name: Placeholder</p>
-  <p>Nickname: Placeholder </p>
+  <p>School Name: {{ playerSchool}}</p>
+  <p>Nickname: {{playerNickName}} </p>
   <p>Your Name: {{ playerName }}</p>
 </div>
 

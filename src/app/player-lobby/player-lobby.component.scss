@@ -2,6 +2,7 @@ $primary-color: #4a4a4a;
 $secondary-color: #3273dc;
 $background-color: #f5f5f5;
 $text-color: #333;
+$danger-color : #ed0000;
 
 .lobby-container {
   max-width: 600px;
@@ -38,6 +39,7 @@ $text-color: #333;
 
     .input-group {
       display: flex;
+      flex-direction: column;
       gap: 1rem;
 
       .game-id-input {
@@ -67,6 +69,25 @@ $text-color: #333;
           cursor: not-allowed;
         }
       }
+      .logout-button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background-color: $danger-color; // Assuming $danger-color is defined as red in your variables
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    
+        &:hover:not(:disabled) {
+            background-color: darken($danger-color, 10%);
+        }
+    
+        &:disabled {
+            background-color: lighten($danger-color, 20%);
+            cursor: not-allowed;
+        }
+    }
     }
   }
 }

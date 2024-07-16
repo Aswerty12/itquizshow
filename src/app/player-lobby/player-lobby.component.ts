@@ -26,6 +26,8 @@ export class PlayerLobbyComponent implements OnInit {
   playeruID: string = '';
   isLoading = false;
   hostWord: string = '';
+  playerNickName: string = '';
+  playerSchool: string = '';
 
   errorMessage: string = ''; // To display error messages
 
@@ -53,7 +55,7 @@ export class PlayerLobbyComponent implements OnInit {
 
     try {
       console.log('Attempting to join game with host word:', this.hostWord);
-      const gameId = await this.gameService.joinGame(this.hostWord, this.playerName, this.playeruID);
+      const gameId = await this.gameService.joinGame(this.hostWord, this.playerName, this.playeruID, this.playerSchool,this.playerNickName);
       
       console.log('Joined game successfully. Game ID:', gameId);
       

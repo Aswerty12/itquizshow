@@ -14,13 +14,33 @@
             [(ngModel)]="hostWord"
             class="game-id-input"
           >
-          <button 
+
+          <input 
+            type="text" 
+            placeholder="Enter Your School Name" 
+            [(ngModel)]="playerSchool"
+            class="game-id-input"
+          >
+
+          <input 
+            type="text" 
+            placeholder="Enter a Nickname" 
+            [(ngModel)]="playerNickName"
+            class="game-id-input"
+          >     
+        </div>
+
+        <div class="input-group">
+          <br>
+        <button 
             (click)="joinGame()" 
             class="join-button"
-            [disabled]="!hostWord || isLoading"
+            [disabled]="!hostWord || !playerNickName || !playerSchool|| isLoading"
           >
             Join Game
           </button>
+          <br>
+          <button (click)="logout()" class="logout-button">Logout</button>
         </div>
       </div>
       
@@ -31,6 +51,6 @@
         <div class="loading-spinner"></div>
         <p>Joining game...</p>
       </div>
-      <button (click)="logout()" class="logout-button">Logout</button>
+      
     </main>
   </div>

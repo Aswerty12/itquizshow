@@ -23,6 +23,8 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
   playerScore: number = 0;
   answer: string = ''; // Player's current answer
   playerId: string = '';
+  playerNickName: string = '';
+  playerSchool: string = '';
   hasSubmittedAnswer: boolean = false; //To prevent double dipping answer
 
   errorMessage: string = ''; // To display error messages
@@ -63,6 +65,8 @@ export class GamePlayerComponent implements OnInit, OnDestroy {
       if (player) {
         this.playerName = player.name;
         this.playerScore = player.score;
+        this.playerNickName = player.nickname;
+        this.playerSchool = player.schoolname;
       }
     });
 

@@ -21,7 +21,9 @@ export interface Player {
     AVERAGE: number;
     DIFFICULT: number;
     CLINCHER: number;
-  };
+  }
+  schoolname: string
+  nickname: string;
 }
 
 export interface GameData {
@@ -117,7 +119,7 @@ export class GameService {
     this.gameStateSubject.next('waiting');
   }
 
-  async joinGame(hostWord: string, playerName: string, userId: string): Promise<string> {
+  async joinGame(hostWord: string, playerName: string, userId: string, school: string, myNickName: string): Promise<string> {
     const gameId = await this.getGameIdFromHostWord(hostWord);
     if (!gameId) {
       throw new Error(`No game found with the host word: ${hostWord}`);
@@ -142,6 +144,8 @@ export class GameService {
 
         if (existingPlayer) {
           existingPlayer.name = playerName;
+          existingPlayer.schoolname = school;
+          existingPlayer.nickname = myNickName;
           existingPlayer.timestamp = new Date();
         } else {
           const newPlayer: Player = {
@@ -156,7 +160,9 @@ export class GameService {
               AVERAGE: 0,
               DIFFICULT: 0,
               CLINCHER: 0
-            }
+            },
+            schoolname : school,
+            nickname : myNickName
           };
           this.players.push(newPlayer);
         }
