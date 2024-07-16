@@ -7,7 +7,7 @@
   <p class="large-text">Game Code: <strong>{{ hostWord }}</strong></p>
   <h3 class="large-text">Players:</h3>
   <ul>
-    <li *ngFor="let player of players" class="large-text">{{ player.name }}</li>
+    <li *ngFor="let player of players" class="large-text">{{ player.schoolname }}</li>
   </ul>
   <button class="large-button" (click)="startGame()">Start Game</button>
 </div>
@@ -22,7 +22,7 @@
   <h2 class="large-text">Leaderboard</h2>
   <ul>
     <li *ngFor="let player of leaderboard" class="large-text">
-      {{ player.name }} - {{ player.score }} points
+      {{ player.schoolname }} - {{ player.score }} points
     </li>
   </ul>
 </div>
@@ -70,7 +70,7 @@
   <h3 class="large-text">Current Leaderboard</h3>
   <ul>
     <li *ngFor="let player of leaderboard" class="large-text">
-      {{ player.nickname }}- {{player.nickname}} - {{ player.score }} points
+      {{ player.schoolname }}- {{player.nickname}} - {{player.name}}- {{ player.score }} points
     </li>
   </ul>
   <button class="large-button" (click)="startNextQuestion()">Start Next Question</button>
