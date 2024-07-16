@@ -28,7 +28,7 @@ alongside
 *angular/cli@18.0.2
 *firebase-tools@13.13.0
 installed globally on their machine via npm. 
-After that they should `git clone` this project then `npm install`. Afterwards follow the instructions in the Firebase section of this readme.
+After that they should `git clone` this project, move to the directory storing the project then `npm install`. Afterwards follow the instructions in the Firebase section of this readme.
 
 ### Hardware Requirements
 
@@ -69,6 +69,8 @@ When Setting up the project use `firebase init` and setup authentication, firest
 This guide will help you by giving a step by step tutorial for setting up the emulator [ guide](https://firebase.google.com/docs/emulator-suite/install_and_configure). Setup your emulators the same way as you did for your actual firebase.
 
 For local developnment you should type in `firebase emulators:start` before turning on your development server. Don't use `ng serve` without doing this as the two sides of the system are reliant on firebase functions for route guarding.
+
+Afterwards if it works locally, you can move onto working with firebase hosting, `firebase serve` for testing with your local files before moving to the final version
 
 ### Deploying to live server
 Use `ng build [projectname] --production` then`firebase deploy` to deploy onto your firebase host. 

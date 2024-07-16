@@ -39,7 +39,9 @@
     <thead>
       <tr>
         <th>Rank</th>
+        <th>School</th>
         <th>Name</th>
+        <th>Nickname</th>
         <th>Score</th>
         <th>Easy</th>
         <th>Average</th>
@@ -50,7 +52,9 @@
     <tbody>
       <tr *ngFor="let player of specialLeaderboard; let i = index">
         <td>{{ i + 1 }}</td>
+        <td>{{ player.schoolname }}</td>
         <td>{{ player.name }}</td>
+        <td>{{ player.nickname}}</td>
         <td>{{ player.score }}</td>
         <td>{{ player.correctAnswers.EASY }}</td>
         <td>{{ player.correctAnswers.AVERAGE }}</td>
@@ -66,7 +70,7 @@
   <h3 class="large-text">Current Leaderboard</h3>
   <ul>
     <li *ngFor="let player of leaderboard" class="large-text">
-      {{ player.name }} - {{ player.score }} points
+      {{ player.nickname }}- {{player.nickname}} - {{ player.score }} points
     </li>
   </ul>
   <button class="large-button" (click)="startNextQuestion()">Start Next Question</button>
