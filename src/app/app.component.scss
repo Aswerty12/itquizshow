@@ -1,10 +1,9 @@
 /* parent.component.scss (or a global stylesheet) */
 
 body {
-  /* Maintain the same light blue background and padding */
   font-family: sans-serif;
   margin: 0;
-  background-color: #e0f2ff;
+  background-color: #f2f2f2; /* Light gray background */
   padding: 2rem;
 }
 
@@ -19,25 +18,25 @@ nav {
   display: flex;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #e0e7ff; /* Maintain light blue background */
+  background-color: #ff0000; /* Light gray background for nav */
 }
 
 nav a {
   padding: 0.5rem 1rem;
-  color: #333; /* Maintain dark gray text */
+  color: #ffffff; /* White text */
   text-decoration: none;
   font-weight: bold;
 }
 
 /* Add hover effect for navbar items */
 nav a:hover {
-  color: #337ab7; /* Use the same blue as child component headings */
+  color: #333; /* Gray color on hover */
 }
 
 .brand-name {
   display: flex;
   align-items: center;
-  color: #007bff; /* Maintain blue brand name */
+  color: #ff0000; /* Red brand name */
 }
 
 .brand-logo {
@@ -50,5 +49,5 @@ nav a:hover {
 section.content {
   flex: 1; /* Takes up remaining space */
   padding: 2rem;
-  background-color: #f5f5f5; /* Maintain light gray background for content */
+  background-color: #f2f2f2; /* White background for content */
 }

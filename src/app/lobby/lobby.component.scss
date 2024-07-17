@@ -1,62 +1,100 @@
 .lobby-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    font-family: sans-serif;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+.lobby-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  text-align: center;
+}
+
+.button {
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 8px 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s, transform 0.2s;
   
-  .lobby-title {
-    font-size: 3rem;
-    margin-bottom: 2rem;
+  &:hover {
+    transform: translateY(-2px);
   }
+}
+
+.google-login-button {
+  @extend .button;
+  background-color: #db4437; // Google red
   
-  .google-login-button,
-  .anonymous-login-button,
-  .logout-button,
-  .join-game-button {
-    background-color: #4CAF50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-bottom: 1rem;
+  &:hover {
+    background-color: darken(#db4437, 10%);
   }
+}
+
+.anonymous-login-button {
+  @extend .button;
+  background-color: #757575; // Gray
   
-  .google-login-button {
-    background-color: #4285F4; /* Google blue */
+  &:hover {
+    background-color: darken(#757575, 10%);
   }
+}
+
+.logout-button {
+  @extend .button;
+  background-color: #ff4136; // Bright red
   
-  .anonymous-login-button {
-    background-color: #f0f0f0; /* Light gray */
-    color: black;
+  &:hover {
+    background-color: darken(#ff4136, 10%);
   }
+}
+
+.join-game-button {
+  @extend .button;
+  background-color: #2ecc40; // Green
   
-  .logout-button {
-    background-color: #f44336; /* Red */
+  &:hover {
+    background-color: darken(#2ecc40, 10%);
   }
-  
-  .loading-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    width: 100px;
-    border: 5px solid #f0f0f0; /* Gray */
-    border-radius: 50%;
-    border-top: 5px solid #4CAF50; /* Green */
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  width: 60px;
+  border: 3px solid #f0f0f0;
+  border-radius: 50%;
+  border-top: 3px solid #ff4136;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.welcome-message {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

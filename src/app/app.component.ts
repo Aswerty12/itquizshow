@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [RouterOutlet,HomeComponent,RouterLink,CommonModule],
   template: `<main>
-    <nav>
+    <nav class= 'nav'>
       <a [routerLink]="['/']">
         <header class="brand-name">
-          <img class="brand-logo" src="logo.svg" alt="logo" aria-hidden="true" />
+          <img class="brand-logo" src="CCIS Logo No-Text.png" alt="logo" aria-hidden="true" />
         </header>
       </a>
       <a routerLink="/lobby"> Play!</a>
