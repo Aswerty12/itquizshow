@@ -12,13 +12,14 @@ Currently this project features two sides and a login screen:
 * A player side that can login join a game, answer questions and receive points (player may only answer a question once).
 * A host side that can upload question sets, start a game, and manage a session.
 
+In addition due to being a firebase project, there is also a console that whoever hosts this will have access to that allows management of storage and accounts outside of the scope necessary to run the quiz show.
 ## Web Hosting Requirement
 
-This project is meant to be hosted on firebase, which also means that there must be a google account associated with this project that can act as the Admin.
+This project is meant to be hosted on firebase, which also means that there must be a google account associated with this project that can act as the Admin. Migrating to other cloud platforms will also require moving database, and authentication functionality from firebase to that platform, thus this developer does not advise this.
 
 ###	Web Hosting Cost 
 
-As this project is only meant for a low user count the [firebase spark plan](https://firebase.google.com/pricing) is sufficient enough to give a no-cost solution for the project host. 
+As this project is only meant for a low user count the [firebase spark plan](https://firebase.google.com/pricing) is sufficient enough to give a no-cost solution for the project host. Outside of any cost from the domain if it were hosted on one's own domain.
 
 
 ### Software Requirements
@@ -38,11 +39,13 @@ For Hosts/Presenters, ensure a large screen is used to present the host screen. 
 ## Chair’s and Co-Chair’s System Functionalities
 The Host side of the website can upload question sets, host games, then run the game. They'll receive a short leaderboard that only contains score while the game is running for readability, then receive a full leaderboard at the end screen which contains full information of correct questions.
 
+A system Demo running through how the system works and how it integrates with firebase is located [here](https://youtu.be/bxVEAfw_6wo)
+
 ### Uploading Question Sets
 
 When uploading question sets, ensure that they follow the format of Question, Answer, Level (EASY, AVERAGE, DIFFICULT, CLINCHER), and CATEGORY to prevent any problems. If you have an excel spreadsheet, then extract the needed collumns with headers into a separate spreadsheet and save it as a `.csv` file. 
 
-** Ensure that your csv has no extra blank lines. **
+** Ensure that your csv has no extra blank lines. This tends to happen when saved directly from excel, so editing out the last line in notepad is advised.**
 
 ## FAQ
 
@@ -55,7 +58,7 @@ Make sure that there are exactly as many rows as questions, saving from excel to
 Due to how the services are coded, a sudden death (i.e end round the first time a correct answer is submitted) function would require a massive rework. The developer suggests that the hosts instead upload the clincher round questions separately then create a new game with the current winners, with the hosts looking at the leaderboard to see who gains the first point. If needed whoever holds admin rights can look at the game and compare timestamps if near simultaneous answers occur.
 
 ### How do I delete question sets?
-The admin (aka the current user with the firebase permission) can log in to the [firebase console ](https://console.firebase.google.com/) and delete from the firestore database.
+The admin (aka the account that uploaded this to firebase) can log in to the [firebase console ](https://console.firebase.google.com/) and delete from the firestore database.
 
 ## Firebase Environment
 
@@ -80,7 +83,7 @@ If deploying to own domain follow this [guide](https://firebase.google.com/docs/
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files. For this project due to route guarding from angular you will need to have firebase emulators installed and online if you want to use the development server.
 
 ## Code scaffolding
 
@@ -88,7 +91,7 @@ Run `ng generate component component-name` to generate a new component. You can 
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. If using separate environments for development and production `ng build itquizshow --configuration production` is the command for using production environment before deploying to firebase via `firebase deploy`.
 
 ## Running unit tests
 
