@@ -4,9 +4,9 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Explanation of project
 
-This project is a kahoot-style clone (but with identification instead of multiple choice) made with angular and firebase. This project is made to be used with the MMCL IT Quiz Show as an automated system to run the quiz automatically.
+This pr angular and firebase. This project is made to be used with the MMCL IT Quiz Show as an automated system to run the quiz automatically.oject is a kahoot-style clone (but with identification instead of multiple choice) made with
 
-Currently this project features two sides and a login screen:
+Currently this project features two sides and a login screen to connect the two sides:
 * A landing page, an about page, and a 404 page
 * A login screen that players can log in from using a google or anonymous account
 * A player side that can login join a game, answer questions and receive points (player may only answer a question once).
@@ -24,10 +24,15 @@ As this project is only meant for a low user count the [firebase spark plan](htt
 
 ### Software Requirements
 Whoever is cloning this project first needs to make sure they have at least
-*Node.js
+
+*Node.js*
+
 alongside 
-*angular/cli@18.0.2
-*firebase-tools@13.13.0
+
+*angular/cli@18.0.2*
+
+*firebase-tools@13.13.0*
+
 installed globally on their machine via npm. 
 After that they should `git clone` this project, move to the directory storing the project then `npm install`. Afterwards follow the instructions in the Firebase section of this readme.
 
@@ -47,6 +52,11 @@ When uploading question sets, ensure that they follow the format of Question, An
 
 ** Ensure that your csv has no extra blank lines. This tends to happen when saved directly from excel, so editing out the last line in notepad is advised.**
 
+### Running the Game
+When setting up a game the chair must set up the game by selecting an uploaded question set then make up a host word to act as password for the game. They should then spread this to the contestants then start the game.
+
+After this the process is straightforward with the game running according to the mechanics outlined in the official time setting per question. 
+
 ## FAQ
 
 ### I can't seem to upload my question set.
@@ -63,6 +73,8 @@ The admin (aka the account that uploaded this to firebase) can log in to the [fi
 ## Firebase Environment
 
 You're going to have to create your own environment files within the environment folder. [Create a firebase application ](https://firebase.google.com/docs/web/setup?continue=https%3A%2F%2Ffirebase.google.com%2Flearn%2Fpathways%2Ffirebase-web%23article-https%3A%2F%2Ffirebase.google.com%2Fdocs%2Fweb%2Fsetup) and get the firebaseConfig variable from your firebase project settings, as well as setting up the emulators within the development environment. 
+
+This is necessary if you are setting up the system on your own domain as the github repository is designed such that you must provide your own environment within the environments folder 
 
 ### Firebase Setup
 
