@@ -92,6 +92,16 @@ Use `ng build [projectname] --production` then`firebase deploy` to deploy onto y
 
 If deploying to own domain follow this [guide](https://firebase.google.com/docs/hosting/custom-domain).
 
+## Cloud Side Setup
+On the firebase console you will have to setup authentication, firestore rules, storage and hosting.
+
+0. the project should be set up on firebase itself from the [console](https://console.firebase.google.com/).
+
+1. Authentication should be set up (In the case of this project Google and Anonymous Log in should be set up). 
+
+2. Firestore should be set up (The specific storage bucket doesn't matter) though rules should also be setup. Though for now the rules in firestore.rules should suffice and will be uploaded when the project is deployed.
+
+3. For legacy reasons storage and realtime databases should be setup as well. These aren't used at all in the app, they're just being set up to avoid errors when deploying.
 
 ## Development server
 
@@ -104,6 +114,10 @@ Run `ng generate component component-name` to generate a new component. You can 
 ## Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. If using separate environments for development and production `ng build itquizshow --configuration production` is the command for using production environment before deploying to firebase via `firebase deploy`.
+
+## Deployment
+
+Deployment is simple. After the build step, you must login via the firebase cli using the command `firebase login`, then use `firebase deploy`. You may need to debug via changing the name in .firebasesrc but as firebase is already set up here, so long as the relevant firebase applets are setup on the firebase console then it may be deployed without issue.
 
 ## Running unit tests
 
